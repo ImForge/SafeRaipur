@@ -11,7 +11,45 @@ const PLACES = [
   'Boriyakhurd','Siltara','Kumhari','Rajatalab','Saddu',
 ];
 
-export default function TopBar({ incidents, hotspots, safetyScore }) {
+const COORDS = {
+  'Telibandha':      [21.2362, 81.6498],
+  'Pandri':          [21.2467, 81.6442],
+  'Tikrapara':       [21.2538, 81.6234],
+  'Gol Bazar':       [21.2390, 81.6432],
+  'Civil Lines':     [21.2587, 81.6378],
+  'Gudhiyari':       [21.2364, 81.6111],
+  'Mowa':            [21.2790, 81.6815],
+  'Khamhardih':      [21.2533, 81.6759],
+  'Ganj':            [21.2415, 81.6450],
+  'Mandir Hasaud':   [21.2156, 81.7372],
+  'Devendra Nagar':  [21.2473, 81.6557],
+  'New Raipur':      [21.1400, 81.7300],
+  'Naya Raipur':     [21.1400, 81.7300],
+  'Atal Nagar':      [21.1400, 81.7300],
+  'Mantralaya':      [21.1370, 81.7390],
+  'Devpuri':         [21.2170, 81.5870],
+  'Tatibandh':       [21.2850, 81.6490],
+  'Urla':            [21.2720, 81.5760],
+  'Birgaon':         [21.2900, 81.7100],
+  'Pachpedi Naka':   [21.2180, 81.6180],
+  'Fafadih':         [21.2248, 81.6358],
+  'Sarona':          [21.2100, 81.7100],
+  'Avanti Vihar':    [21.2508, 81.6328],
+  'Shankar Nagar':   [21.2555, 81.6428],
+  'Nehru Nagar':     [21.2685, 81.6388],
+  'Labhandi':        [21.2658, 81.6228],
+  'Bhanpuri':        [21.3050, 81.6500],
+  'Kabir Nagar':     [21.2628, 81.6562],
+  'Rawabhata':       [21.1900, 81.6150],
+  'Amleshwar':       [21.1750, 81.5660],
+  'Boriyakhurd':     [21.2520, 81.6215],
+  'Siltara':         [21.3200, 81.6700],
+  'Kumhari':         [21.3500, 81.6800],
+  'Rajatalab':       [21.1980, 81.5900],
+  'Saddu':           [21.1900, 81.6540],
+};
+
+export default function TopBar({ incidents, hotspots, safetyScore, onSearch }) {
   const [time, setTime] = useState('');
   const [date, setDate] = useState('');
   const [count, setCount] = useState(0);
@@ -82,7 +120,12 @@ export default function TopBar({ incidents, hotspots, safetyScore }) {
         {results.length > 0 && (
           <div className="search-results glass">
             {results.map(p => (
-              <div key={p} className="sr-item" onClick={() => { setQuery(p); setResults([]); }}>
+              <div key={p} className="sr-item" onClick={() => {
+                setQuery(p);
+                setResults([]);
+                const coords = COORDS[p];
+                if (coords && onSearch) onSearch({ lat: coords[0], lng: coords[1] });
+              }}>
                 <span className="dot" />
                 {p}
               </div>
