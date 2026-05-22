@@ -54,6 +54,7 @@ SOURCES = [
 # Known Raipur localities with approximate coordinates.
 # In production, use a real geocoder (Nominatim / Google).
 LOCALITY_GAZETTEER = {
+    # Core Raipur
     "telibandha":        (21.2362, 81.6498),
     "vip road":          (21.2400, 81.6700),
     "marine drive":      (21.2367, 81.6562),
@@ -70,6 +71,33 @@ LOCALITY_GAZETTEER = {
     "gudhiyari":         (21.2364, 81.6111),
     "mandir hasaud":     (21.2156, 81.7372),
     "ganj":              (21.2415, 81.6450),
+    "shankar nagar":     (21.2555, 81.6428),
+    "nehru nagar":       (21.2685, 81.6388),
+    "avanti vihar":      (21.2508, 81.6328),
+    "kabir nagar":       (21.2628, 81.6562),
+    "fafadih":           (21.2248, 81.6358),
+    "labhandi":          (21.2658, 81.6228),
+    "katora talab":      (21.2390, 81.6360),
+    "pachpedi naka":     (21.2180, 81.6180),
+    "vidhan sabha":      (21.2570, 81.6310),
+    # Surrounding areas
+    "new raipur":        (21.1400, 81.7300),
+    "naya raipur":       (21.1400, 81.7300),
+    "atal nagar":        (21.1400, 81.7300),
+    "mantralaya":        (21.1370, 81.7390),
+    "devpuri":           (21.2170, 81.5870),
+    "tatibandh":         (21.2850, 81.6490),
+    "urla":              (21.2720, 81.5760),
+    "birgaon":           (21.2900, 81.7100),
+    "bhanpuri":          (21.3050, 81.6500),
+    "sarona":            (21.2100, 81.7100),
+    "rawabhata":         (21.1900, 81.6150),
+    "amleshwar":         (21.1750, 81.5660),
+    "kumhari":           (21.3500, 81.6800),
+    "siltara":           (21.3200, 81.6700),
+    "saddu":             (21.1900, 81.6540),
+    "rajatalab":         (21.1980, 81.5900),
+    "kota":              (21.2780, 81.5880),
 }
 
 

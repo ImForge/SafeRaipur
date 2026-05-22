@@ -3,7 +3,7 @@ import L from 'leaflet';
 import 'leaflet.heat';
 import { weight, TYPE_LABEL } from '../utils/risk.js';
 
-const CENTER = [21.2514, 81.6296];
+const CENTER = [21.2200, 81.6500];
 const STATIONS = [
   { name:'Telibandha', lat:21.2362, lng:81.6498 },
   { name:'Civil Lines', lat:21.2587, lng:81.6378 },
@@ -14,6 +14,17 @@ const STATIONS = [
   { name:'Mowa', lat:21.2790, lng:81.6815 },
   { name:'Gudhiyari', lat:21.2364, lng:81.6111 },
   { name:'Ganj', lat:21.2415, lng:81.6450 },
+  { name:'Mandir Hasaud', lat:21.2156, lng:81.7372 },
+  { name:'Khamhardih', lat:21.2533, lng:81.6759 },
+  { name:'Devendra Nagar', lat:21.2473, lng:81.6557 },
+  { name:'New Raipur (Atal Nagar)', lat:21.1400, lng:81.7300 },
+  { name:'Devpuri', lat:21.2170, lng:81.5870 },
+  { name:'Tatibandh', lat:21.2850, lng:81.6490 },
+  { name:'Urla', lat:21.2720, lng:81.5760 },
+  { name:'Birgaon', lat:21.2900, lng:81.7100 },
+  { name:'Pachpedi Naka', lat:21.2180, lng:81.6180 },
+  { name:'Bhanpuri', lat:21.3050, lng:81.6500 },
+  { name:'Sarona', lat:21.2100, lng:81.7100 },
 ];
 
 export default function MapView({ incidents, hotspots, arming, onMapClick, focusedLatLng, routeShown }) {
@@ -28,7 +39,7 @@ export default function MapView({ incidents, hotspots, arming, onMapClick, focus
   // init map once
   useEffect(() => {
     if (mapRef.current) return;
-    const map = L.map(containerRef.current, { center: CENTER, zoom: 13, zoomControl: false });
+    const map = L.map(containerRef.current, { center: CENTER, zoom: 12, zoomControl: false });
     L.control.zoom({ position: 'bottomright' }).addTo(map);
     L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}{r}.png',
       { subdomains:'abcd', maxZoom:19, attribution:'© OSM · CARTO' }).addTo(map);

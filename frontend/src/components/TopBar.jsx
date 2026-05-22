@@ -1,8 +1,15 @@
 import { useState, useEffect, useRef } from 'react';
 import { scoreColor } from '../utils/risk.js';
 
-const PLACES = ['Telibandha','Pandri','Tikrapara','Gol Bazar','Civil Lines',
-  'Gudhiyari','Mowa','Khamhardih','Ganj','Mandir Hasaud','Devendra Nagar'];
+const PLACES = [
+  'Telibandha','Pandri','Tikrapara','Gol Bazar','Civil Lines',
+  'Gudhiyari','Mowa','Khamhardih','Ganj','Mandir Hasaud','Devendra Nagar',
+  'New Raipur','Naya Raipur','Atal Nagar','Mantralaya',
+  'Devpuri','Tatibandh','Urla','Birgaon','Pachpedi Naka',
+  'Fafadih','Sarona','Avanti Vihar','Shankar Nagar','Nehru Nagar',
+  'Labhandi','Bhanpuri','Kabir Nagar','Rawabhata','Amleshwar',
+  'Boriyakhurd','Siltara','Kumhari','Rajatalab','Saddu',
+];
 
 export default function TopBar({ incidents, hotspots, safetyScore }) {
   const [time, setTime] = useState('');

@@ -57,10 +57,10 @@ def _gather_incidents(db: Session, time_of_day: str, include_unverified: bool = 
 @router.get("/risk-grid", response_model=RiskGrid)
 def get_risk_grid(
     time_of_day: str = Query("night", pattern="^(day|night)$"),
-    min_lat: float = 21.20,
-    min_lng: float = 81.59,
-    max_lat: float = 21.30,
-    max_lng: float = 81.74,
+    min_lat: float = 21.10,
+    min_lng: float = 81.54,
+    max_lat: float = 21.38,
+    max_lng: float = 81.80,
     resolution: int = Query(50, ge=10, le=100),
     db: Session = Depends(get_db),
 ):
