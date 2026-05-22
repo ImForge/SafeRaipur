@@ -1,6 +1,6 @@
 # Raipur Safe Map
 
-Raipur has a crime problem that nobody talks about openly. Women deal with it every day — harassment, chain snatching, worse — and the only official data is a national report published once a year that tells you nothing about which street is dangerous at 10pm.
+Raipur has a crime problem that nobody talks about openly. Women deal with it every day harassment, chain snatching, worse and the only official data is a national report published once a year that tells you nothing about which street is dangerous at 10pm.
 
 I built this because I live here and wanted to actually see the pattern. Where does it happen. When. How often at night versus during the day. The kind of information that should exist but doesn't in any usable form.
 
