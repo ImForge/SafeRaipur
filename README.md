@@ -31,3 +31,8 @@ Everything you need is in `SETUP_GUIDE.md`. Short version: you need Docker, Pyth
 ## A note on the data
 
 Areas with fewer reported incidents are not necessarily safer. A lot goes unreported. This map reflects what was documented, not everything that happened. Use it as one input, not a guarantee.
+
+
+## Still in development
+
+This is a work in progress. A few things are placeholders right now:
