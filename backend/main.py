@@ -14,7 +14,11 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from routers import incidents, reports, risk
+from database import engine
+from models import Base
 
+# create tables on startup if they don't exist
+Base.metadata.create_all(bind=engine)
 app = FastAPI(
     title="Raipur Safe Map API",
     description="Backend for Raipur women's safety mapping app.",
