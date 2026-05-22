@@ -49,6 +49,15 @@ export default function MapView({ incidents, hotspots, arming, onMapClick, focus
     return () => { map.remove(); mapRef.current = null; };
   }, []);
 
+  // re-register click handler whenever onMapClick changes (arming state)
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!map) return;
+    const handler = (e) => onMapClick({ lat: e.latlng.lat, lng: e.latlng.lng });
+    map.on('click', handler);
+    return () => map.off('click', handler);
+  }, [onMapClick]);
+
   // re-render layers when data changes
   useEffect(() => {
     const map = mapRef.current;

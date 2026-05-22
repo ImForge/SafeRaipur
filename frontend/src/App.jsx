@@ -54,10 +54,10 @@ export default function App() {
 
   useEffect(() => { refresh(); }, [refresh]);
 
-  const handleMapClick = (latlng) => {
+  const handleMapClick = useCallback((latlng) => {
     if (!arming) return;
     setPendingLatLng(latlng);
-  };
+  }, [arming]);
 
   const handleSubmitReport = async (form) => {
     try {
