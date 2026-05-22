@@ -22,11 +22,6 @@ FastAPI, PostgreSQL with PostGIS, React, Leaflet. Deployed on Vercel and Render 
 
 ---
 
-## Running it locally
-
-Everything you need is in `SETUP_GUIDE.md`. Short version: you need Docker, Python, and Node. Start the database with Docker, run the Python backend, run the React frontend. The guide has exact commands for each step.
-
----
 
 ## A note on the data
 
