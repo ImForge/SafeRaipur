@@ -28,13 +28,8 @@ app = FastAPI(
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "http://localhost:5173",
-        "http://localhost:3000",
-        "https://raipur-safe-map.vercel.app",      # replace with your actual Vercel URL
-        "https://raipur-safe-map-git-main.vercel.app",  # Vercel also generates this preview URL
-    ],
-    allow_credentials=True,
+    allow_origins=["*"],
+    allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
 )
