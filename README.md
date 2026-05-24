@@ -31,3 +31,4 @@ Areas with fewer reported incidents are not necessarily safer. A lot goes unrepo
 ## Still in development
 
 This is a work in progress. A few things are placeholders right now:
+the api reload might take some time to refresh after the site has not been visited for last 24 hours, the reload time can go upto 2 mins, so wait it our for me plz :>
