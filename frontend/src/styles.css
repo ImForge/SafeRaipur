@@ -403,31 +403,70 @@ body{font-family:var(--ui);background:var(--void);color:var(--text);
   .stat-pill .pl,.search-wrap{display:none;}
 }
 @media(max-width:900px){
-  .topbar{height:54px;padding:0 12px;gap:10px;}
-  .brand-sub,.weather-pill,.dock-sep,.pill-status{display:none;}
+  /* TOPBAR — compact single row */
+  .topbar{height:56px;padding:0 11px;gap:8px;top:10px;left:10px;right:10px;}
+  .brand{padding-right:10px;gap:8px;}
+  .brand-sub{display:none;}
+  .brand-name{font-size:14px;letter-spacing:.1em;}
+  .logo-mark{width:30px;height:30px;}
+  .logo-mark svg{width:16px;height:16px;}
+  .weather-pill,.dock-sep,.pill-status,.search-wrap{display:none;}
+  .live-chip{padding:8px;}
+  .live-chip span{display:none;}
+  .stat-pill{padding:6px 10px;}
+
+  /* DOCK — sits just below the topbar */
+  .dock{bottom:auto;top:74px;left:10px;right:10px;transform:none;
+    height:48px;justify-content:flex-start;gap:8px;padding:0 8px;
+    animation:dropIn .8s ease both;overflow:hidden;}
+  .daynight{flex-shrink:0;}
+  .dn-btn{padding:7px 12px;font-size:11px;}
+  .filters{overflow-x:auto;flex-wrap:nowrap;-webkit-overflow-scrolling:touch;
+    scrollbar-width:none;}
+  .filters::-webkit-scrollbar{display:none;}
+
+  /* SIDEBARS become one bottom sheet */
   .side{position:fixed;left:0;right:0;width:auto;top:auto;bottom:0;height:auto;
-    max-height:78vh;border-radius:22px 22px 0 0;border-bottom:none;
-    transform:translateY(calc(100% - 132px));transition:transform .5s cubic-bezier(.3,.9,.3,1);animation:none!important;}
+    max-height:80vh;border-radius:22px 22px 0 0;border-bottom:none;
+    transform:translateY(calc(100% - 126px));
+    transition:transform .45s cubic-bezier(.3,.9,.3,1);animation:none!important;}
   .side.sheet-open{transform:translateY(0);}
   .side-right{display:none;}
-  .sheet-handle{display:flex;flex-direction:column;align-items:center;padding:9px 0 4px;cursor:grab;flex-shrink:0;}
-  .sheet-grip{width:38px;height:4px;border-radius:3px;background:rgba(255,255,255,.18);}
-  .sheet-peek{font-family:var(--mono);font-size:9px;letter-spacing:.15em;text-transform:uppercase;color:var(--text-faint);margin-top:7px;}
-  .mobile-tabs{display:flex;gap:6px;padding:4px 16px 12px;flex-shrink:0;}
+  .sheet-handle{display:flex;flex-direction:column;align-items:center;
+    padding:10px 0 4px;cursor:grab;flex-shrink:0;}
+  .sheet-grip{width:38px;height:4px;border-radius:3px;background:rgba(255,255,255,.2);}
+  .sheet-peek{font-family:var(--mono);font-size:9px;letter-spacing:.15em;
+    text-transform:uppercase;color:var(--text-faint);margin-top:7px;}
+  .mobile-tabs{display:flex;gap:6px;padding:4px 14px 12px;flex-shrink:0;}
   .mtab{flex:1;border:1px solid var(--stroke);background:rgba(255,255,255,.03);
     border-radius:9px;padding:9px;font-family:var(--ui);font-size:11px;font-weight:600;
     color:var(--text-dim);cursor:pointer;transition:.2s;}
   .mtab.on{background:rgba(255,59,92,.14);border-color:rgba(255,59,92,.35);color:var(--crimson-soft);}
-  .side-scroll{padding:4px 16px 20px;}
+  .side-scroll{padding:4px 14px 24px;}
   .tab-pane{display:none!important;}
   .tab-pane.on{display:flex!important;}
   .tab-pane[data-pane="hotspots"]{display:none!important;}
   .tab-pane[data-pane="hotspots"].on{display:flex!important;}
-  .dock{bottom:auto;top:62px;left:12px;right:12px;transform:none;
-    height:50px;justify-content:space-between;animation:dropIn .8s ease both;}
-  .filters{overflow-x:auto;}
-  .report-btn{position:fixed;right:14px;bottom:148px;z-index:31;
-    height:52px;width:52px;padding:0;border-radius:50%;}
+
+  /* REPORT button becomes a floating action button */
+  .report-btn{position:fixed;right:14px;bottom:140px;z-index:31;
+    height:54px;width:54px;padding:0;border-radius:50%;}
+  .report-btn svg{width:20px;height:20px;}
   .rb-text{display:none;}
+
+  /* keep banners/toasts clear of the sheet */
+  .arm-banner{top:auto;bottom:206px;}
+  .toast{bottom:206px;}
 }
 .root-shell{position:fixed;inset:0;overflow:hidden;}
+
+/* ── data awareness note ── */
+.data-note{border-radius:13px;padding:14px;
+  background:linear-gradient(160deg,rgba(255,166,61,.06),rgba(13,18,30,.3));
+  border:1px solid rgba(255,166,61,.16);}
+.data-note-head{display:flex;align-items:center;gap:7px;margin-bottom:8px;
+  color:var(--amber-soft);}
+.data-note-head span{font-family:var(--mono);font-size:9.5px;letter-spacing:.16em;
+  text-transform:uppercase;font-weight:600;}
+.data-note p{font-size:11.5px;line-height:1.6;color:var(--text-dim);}
+.data-note p b{color:var(--text);font-weight:700;}

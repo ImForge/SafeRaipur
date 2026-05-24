@@ -296,6 +296,25 @@ export default function LeftSidebar({ timeOfDay, incidents, hotspots, safetyScor
             )}
           </div>
 
+          {/* Data awareness note */}
+          <div className="block">
+            <div className="data-note">
+              <div className="data-note-head">
+                <svg viewBox="0 0 24 24" width="13" fill="none" stroke="currentColor"
+                  strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                  <circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/>
+                </svg>
+                <span>About this data</span>
+              </div>
+              <p>
+                This map shows <b>reported</b> incidents only. The real numbers are far
+                higher — most harassment and stalking is never reported to police or
+                covered by news. An area looking quiet here does not mean it is safe.
+                It often just means people there stay silent.
+              </p>
+            </div>
+          </div>
+
         </div>{/* /overview pane */}
 
         {/* HOTSPOTS PANE (mobile tab) */}
