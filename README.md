@@ -34,6 +34,7 @@ FastAPI, PostgreSQL with PostGIS, React, Leaflet. Deployed on Vercel and Render 
 
 ---
 
+<<<<<<< HEAD
 
 ## Still in development
 
@@ -44,3 +45,15 @@ The weather display is static. It shows a fixed temperature and condition, not l
 The Plot Safest Route button draws a demo route on the map. It does not calculate a real path or actual risk along roads yet. That feature is being built.
 
 Everything else, the heatmap, incident data, day and night toggle, filters, search, and anonymous reporting, works.
+=======
+
+## A note on the data
+
+Areas with fewer reported incidents are not necessarily safer. A lot goes unreported. This map reflects what was documented, not everything that happened. Use it as one input, not a guarantee.
+
+
+## Still in development
+
+This is a work in progress. A few things are placeholders right now:
+the api reload might take some time to refresh after the site has not been visited for last 24 hours, the reload time can go upto 2 mins, so wait it our for me plz :>
+>>>>>>> 65987760e7f5c88024c14ad383850f66812d4328
