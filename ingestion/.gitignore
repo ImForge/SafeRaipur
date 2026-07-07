@@ -1,0 +1,23 @@
+# Python
+backend/.venv/
+backend/__pycache__/
+backend/**/__pycache__/
+*.pyc
+*.pyo
+
+# Node
+frontend/node_modules/
+frontend/dist/
+
+# Environment files (contains secrets — never commit these)
+.env
+backend/.env
+frontend/.env
+
+# Database / Docker volumes
+postgres-data/
+
+# OS files
+.DS_Store
+Thumbs.db
+```

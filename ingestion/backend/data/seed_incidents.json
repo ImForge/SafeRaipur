@@ -1,0 +1,157 @@
+{
+  "_comment": "Expanded Raipur Safe Map seed data — includes New Raipur (Atal Nagar), Devpuri, Tatibandh, Urla, Birgaon, Pachpedi Naka, Fafadih, Sarona, Avanti Vihar, Shankar Nagar, Nehru Nagar, Labhandi, Bhanpuri, and surrounding areas.",
+  "city": "Raipur",
+  "state": "Chhattisgarh",
+  "center": { "lat": 21.2200, "lng": 81.6500 },
+  "police_stations": [
+    { "name": "Telibandha", "lat": 21.2362, "lng": 81.6498, "phone": "0771-2425000" },
+    { "name": "Civil Lines", "lat": 21.2587, "lng": 81.6378, "phone": "0771-2420010" },
+    { "name": "Kotwali", "lat": 21.2371, "lng": 81.6358, "phone": "0771-2535320" },
+    { "name": "Devendra Nagar", "lat": 21.2473, "lng": 81.6557, "phone": "0771-2443030" },
+    { "name": "Gol Bazar", "lat": 21.2390, "lng": 81.6432, "phone": "0771-2226411" },
+    { "name": "Tikrapara", "lat": 21.2538, "lng": 81.6234, "phone": "0771-2410112" },
+    { "name": "Pandri", "lat": 21.2467, "lng": 81.6442, "phone": "0771-4032100" },
+    { "name": "Mowa", "lat": 21.2790, "lng": 81.6815, "phone": "0771-2972250" },
+    { "name": "Khamhardih", "lat": 21.2533, "lng": 81.6759, "phone": "0771-2890200" },
+    { "name": "Gudhiyari", "lat": 21.2364, "lng": 81.6111, "phone": "0771-2533344" },
+    { "name": "Mandir Hasaud", "lat": 21.2156, "lng": 81.7372, "phone": "0771-2972600" },
+    { "name": "Ganj", "lat": 21.2415, "lng": 81.6450, "phone": "0771-2235040" },
+    { "name": "New Raipur (Atal Nagar)", "lat": 21.1400, "lng": 81.7300, "phone": "0771-2971100" },
+    { "name": "Devpuri", "lat": 21.2170, "lng": 81.5870, "phone": "0771-2441200" },
+    { "name": "Tatibandh", "lat": 21.2850, "lng": 81.6490, "phone": "0771-2280100" },
+    { "name": "Urla", "lat": 21.2720, "lng": 81.5760, "phone": "0771-2281400" },
+    { "name": "Birgaon", "lat": 21.2900, "lng": 81.7100, "phone": "0771-2970100" },
+    { "name": "Pachpedi Naka", "lat": 21.2180, "lng": 81.6180, "phone": "0771-2443500" },
+    { "name": "Bhanpuri", "lat": 21.3050, "lng": 81.6500, "phone": "0771-2282200" },
+    { "name": "Sarona", "lat": 21.2100, "lng": 81.7100, "phone": "0771-2971800" }
+  ],
+  "incidents": [
+    { "id": 1, "type": "sexual_assault", "lat": 21.2378, "lng": 81.6512, "datetime": "2026-02-04T21:30:00", "area": "Telibandha · VIP Road", "source": "news", "severity": 10 },
+    { "id": 2, "type": "assault", "lat": 21.2368, "lng": 81.6493, "datetime": "2024-12-09T14:00:00", "area": "Telibandha", "source": "news", "severity": 6 },
+    { "id": 3, "type": "suspicious", "lat": 21.2367, "lng": 81.6562, "datetime": "2023-11-25T07:00:00", "area": "Telibandha Marine Drive", "source": "news", "severity": 8 },
+    { "id": 4, "type": "assault", "lat": 21.2390, "lng": 81.6432, "datetime": "2024-12-09T13:00:00", "area": "Gol Bazar · Ghadi Chowk", "source": "news", "severity": 5 },
+    { "id": 5, "type": "chain_snatching", "lat": 21.2532, "lng": 81.6220, "datetime": "2024-12-09T18:30:00", "area": "Tikrapara · Boriyakhurd", "source": "news", "severity": 3 },
+    { "id": 6, "type": "sexual_assault", "lat": 21.2086, "lng": 81.7421, "datetime": "2023-09-01T23:15:00", "area": "Mandir Hasaud", "source": "news", "severity": 10 },
+
+    { "id": 10, "type": "harassment", "lat": 21.2375, "lng": 81.6502, "datetime": "2026-04-12T22:15:00", "area": "Telibandha", "source": "crowd", "severity": 2 },
+    { "id": 11, "type": "stalking", "lat": 21.2358, "lng": 81.6485, "datetime": "2026-04-18T21:00:00", "area": "Telibandha", "source": "crowd", "severity": 4 },
+    { "id": 12, "type": "harassment", "lat": 21.2381, "lng": 81.6520, "datetime": "2026-03-22T20:30:00", "area": "Telibandha", "source": "crowd", "severity": 2 },
+    { "id": 13, "type": "theft", "lat": 21.2350, "lng": 81.6470, "datetime": "2026-02-15T19:45:00", "area": "Telibandha", "source": "crowd", "severity": 2 },
+    { "id": 14, "type": "stalking", "lat": 21.2390, "lng": 81.6540, "datetime": "2026-01-08T22:10:00", "area": "Telibandha", "source": "crowd", "severity": 4 },
+    { "id": 15, "type": "harassment", "lat": 21.2365, "lng": 81.6478, "datetime": "2025-11-30T21:20:00", "area": "Telibandha", "source": "crowd", "severity": 2 },
+
+    { "id": 20, "type": "harassment", "lat": 21.2470, "lng": 81.6445, "datetime": "2026-05-02T20:00:00", "area": "Pandri", "source": "crowd", "severity": 2 },
+    { "id": 21, "type": "chain_snatching", "lat": 21.2462, "lng": 81.6438, "datetime": "2026-04-25T19:30:00", "area": "Pandri Bus Stand", "source": "crowd", "severity": 3 },
+    { "id": 22, "type": "stalking", "lat": 21.2475, "lng": 81.6450, "datetime": "2026-04-10T21:30:00", "area": "Pandri", "source": "crowd", "severity": 4 },
+    { "id": 23, "type": "harassment", "lat": 21.2480, "lng": 81.6460, "datetime": "2026-03-15T22:45:00", "area": "Pandri", "source": "crowd", "severity": 2 },
+    { "id": 24, "type": "theft", "lat": 21.2466, "lng": 81.6440, "datetime": "2026-02-28T23:00:00", "area": "Pandri", "source": "crowd", "severity": 2 },
+    { "id": 25, "type": "assault", "lat": 21.2459, "lng": 81.6448, "datetime": "2026-02-12T22:30:00", "area": "Pandri", "source": "crowd", "severity": 6 },
+    { "id": 26, "type": "harassment", "lat": 21.2472, "lng": 81.6455, "datetime": "2026-01-20T20:15:00", "area": "Pandri", "source": "crowd", "severity": 2 },
+    { "id": 27, "type": "stalking", "lat": 21.2468, "lng": 81.6432, "datetime": "2025-12-18T21:45:00", "area": "Pandri", "source": "crowd", "severity": 4 },
+    { "id": 28, "type": "chain_snatching", "lat": 21.2455, "lng": 81.6442, "datetime": "2025-11-22T19:00:00", "area": "Pandri Market", "source": "crowd", "severity": 3 },
+
+    { "id": 30, "type": "chain_snatching", "lat": 21.2545, "lng": 81.6228, "datetime": "2026-04-30T18:45:00", "area": "Tikrapara", "source": "crowd", "severity": 3 },
+    { "id": 31, "type": "harassment", "lat": 21.2538, "lng": 81.6240, "datetime": "2026-04-18T21:30:00", "area": "Tikrapara", "source": "crowd", "severity": 2 },
+    { "id": 32, "type": "theft", "lat": 21.2528, "lng": 81.6220, "datetime": "2026-03-20T20:00:00", "area": "Tikrapara", "source": "crowd", "severity": 2 },
+    { "id": 33, "type": "stalking", "lat": 21.2542, "lng": 81.6232, "datetime": "2026-02-25T22:15:00", "area": "Tikrapara", "source": "crowd", "severity": 4 },
+    { "id": 34, "type": "chain_snatching", "lat": 21.2520, "lng": 81.6215, "datetime": "2026-01-30T19:30:00", "area": "Boriyakhurd", "source": "crowd", "severity": 3 },
+
+    { "id": 40, "type": "harassment", "lat": 21.2395, "lng": 81.6440, "datetime": "2026-05-08T19:30:00", "area": "Gol Bazar", "source": "crowd", "severity": 2 },
+    { "id": 41, "type": "theft", "lat": 21.2388, "lng": 81.6428, "datetime": "2026-04-20T20:15:00", "area": "Gol Bazar", "source": "crowd", "severity": 2 },
+    { "id": 42, "type": "stalking", "lat": 21.2392, "lng": 81.6435, "datetime": "2026-03-12T21:00:00", "area": "Gol Bazar", "source": "crowd", "severity": 4 },
+    { "id": 43, "type": "chain_snatching", "lat": 21.2400, "lng": 81.6432, "datetime": "2026-01-25T18:30:00", "area": "Gol Bazar", "source": "crowd", "severity": 3 },
+
+    { "id": 50, "type": "harassment", "lat": 21.2590, "lng": 81.6380, "datetime": "2026-04-15T20:30:00", "area": "Civil Lines", "source": "crowd", "severity": 2 },
+    { "id": 51, "type": "theft", "lat": 21.2585, "lng": 81.6375, "datetime": "2026-03-08T21:00:00", "area": "Civil Lines", "source": "crowd", "severity": 2 },
+    { "id": 52, "type": "stalking", "lat": 21.2580, "lng": 81.6385, "datetime": "2026-02-05T22:00:00", "area": "Civil Lines", "source": "crowd", "severity": 4 },
+
+    { "id": 60, "type": "harassment", "lat": 21.2370, "lng": 81.6115, "datetime": "2026-04-22T21:15:00", "area": "Gudhiyari", "source": "crowd", "severity": 2 },
+    { "id": 61, "type": "stalking", "lat": 21.2360, "lng": 81.6108, "datetime": "2026-03-30T22:30:00", "area": "Gudhiyari", "source": "crowd", "severity": 4 },
+    { "id": 62, "type": "theft", "lat": 21.2358, "lng": 81.6120, "datetime": "2026-02-20T20:00:00", "area": "Gudhiyari", "source": "crowd", "severity": 2 },
+
+    { "id": 70, "type": "harassment", "lat": 21.2795, "lng": 81.6820, "datetime": "2026-04-28T20:45:00", "area": "Mowa", "source": "crowd", "severity": 2 },
+    { "id": 71, "type": "stalking", "lat": 21.2785, "lng": 81.6810, "datetime": "2026-03-18T22:00:00", "area": "Mowa", "source": "crowd", "severity": 4 },
+
+    { "id": 80, "type": "harassment", "lat": 21.2535, "lng": 81.6762, "datetime": "2026-04-10T21:30:00", "area": "Khamhardih", "source": "crowd", "severity": 2 },
+    { "id": 81, "type": "theft", "lat": 21.2530, "lng": 81.6755, "datetime": "2026-02-22T19:30:00", "area": "Khamhardih", "source": "crowd", "severity": 2 },
+
+    { "id": 90, "type": "harassment", "lat": 21.2418, "lng": 81.6452, "datetime": "2026-04-05T20:00:00", "area": "Ganj", "source": "crowd", "severity": 2 },
+    { "id": 91, "type": "chain_snatching", "lat": 21.2412, "lng": 81.6448, "datetime": "2026-02-14T19:45:00", "area": "Ganj", "source": "crowd", "severity": 3 },
+
+    { "id": 100, "type": "harassment", "lat": 21.1420, "lng": 81.7280, "datetime": "2026-05-10T22:00:00", "area": "New Raipur · Sector 19", "source": "crowd", "severity": 2 },
+    { "id": 101, "type": "stalking", "lat": 21.1390, "lng": 81.7320, "datetime": "2026-05-05T21:30:00", "area": "New Raipur · Mantralaya", "source": "crowd", "severity": 4 },
+    { "id": 102, "type": "harassment", "lat": 21.1450, "lng": 81.7240, "datetime": "2026-04-28T22:15:00", "area": "New Raipur · Sector 24", "source": "crowd", "severity": 2 },
+    { "id": 103, "type": "theft", "lat": 21.1360, "lng": 81.7350, "datetime": "2026-04-20T21:00:00", "area": "New Raipur · Vidhan Sabha Road", "source": "crowd", "severity": 2 },
+    { "id": 104, "type": "stalking", "lat": 21.1480, "lng": 81.7190, "datetime": "2026-04-12T23:00:00", "area": "New Raipur · Sector 27", "source": "crowd", "severity": 4 },
+    { "id": 105, "type": "harassment", "lat": 21.1400, "lng": 81.7260, "datetime": "2026-03-30T20:45:00", "area": "New Raipur · Sector 1", "source": "crowd", "severity": 2 },
+    { "id": 106, "type": "theft", "lat": 21.1340, "lng": 81.7380, "datetime": "2026-03-18T22:30:00", "area": "New Raipur", "source": "crowd", "severity": 2 },
+    { "id": 107, "type": "assault", "lat": 21.1370, "lng": 81.7300, "datetime": "2026-03-05T23:15:00", "area": "New Raipur · Atal Nagar", "source": "crowd", "severity": 6 },
+    { "id": 108, "type": "harassment", "lat": 21.1460, "lng": 81.7210, "datetime": "2026-02-22T21:00:00", "area": "New Raipur · Sector 29", "source": "crowd", "severity": 2 },
+    { "id": 109, "type": "stalking", "lat": 21.1410, "lng": 81.7340, "datetime": "2026-02-10T22:45:00", "area": "New Raipur · Secretariat Road", "source": "crowd", "severity": 4 },
+
+    { "id": 110, "type": "harassment", "lat": 21.2180, "lng": 81.5880, "datetime": "2026-05-08T21:30:00", "area": "Devpuri", "source": "crowd", "severity": 2 },
+    { "id": 111, "type": "stalking", "lat": 21.2160, "lng": 81.5860, "datetime": "2026-04-22T22:00:00", "area": "Devpuri", "source": "crowd", "severity": 4 },
+    { "id": 112, "type": "theft", "lat": 21.2190, "lng": 81.5900, "datetime": "2026-04-10T20:30:00", "area": "Devpuri", "source": "crowd", "severity": 2 },
+    { "id": 113, "type": "chain_snatching", "lat": 21.2150, "lng": 81.5870, "datetime": "2026-03-25T19:45:00", "area": "Devpuri Market", "source": "crowd", "severity": 3 },
+    { "id": 114, "type": "harassment", "lat": 21.2200, "lng": 81.5840, "datetime": "2026-03-10T21:15:00", "area": "Devpuri", "source": "crowd", "severity": 2 },
+
+    { "id": 120, "type": "chain_snatching", "lat": 21.2855, "lng": 81.6500, "datetime": "2026-05-12T18:30:00", "area": "Tatibandh", "source": "crowd", "severity": 3 },
+    { "id": 121, "type": "harassment", "lat": 21.2840, "lng": 81.6490, "datetime": "2026-05-01T20:45:00", "area": "Tatibandh", "source": "crowd", "severity": 2 },
+    { "id": 122, "type": "stalking", "lat": 21.2860, "lng": 81.6510, "datetime": "2026-04-18T21:30:00", "area": "Tatibandh", "source": "crowd", "severity": 4 },
+    { "id": 123, "type": "theft", "lat": 21.2848, "lng": 81.6480, "datetime": "2026-04-05T19:00:00", "area": "Tatibandh Chowk", "source": "crowd", "severity": 2 },
+    { "id": 124, "type": "chain_snatching", "lat": 21.2870, "lng": 81.6525, "datetime": "2026-03-20T18:45:00", "area": "Tatibandh", "source": "crowd", "severity": 3 },
+
+    { "id": 130, "type": "harassment", "lat": 21.2725, "lng": 81.5765, "datetime": "2026-05-09T22:00:00", "area": "Urla", "source": "crowd", "severity": 2 },
+    { "id": 131, "type": "stalking", "lat": 21.2710, "lng": 81.5750, "datetime": "2026-04-28T21:30:00", "area": "Urla Industrial Area", "source": "crowd", "severity": 4 },
+    { "id": 132, "type": "assault", "lat": 21.2738, "lng": 81.5780, "datetime": "2026-04-15T23:00:00", "area": "Urla", "source": "crowd", "severity": 6 },
+    { "id": 133, "type": "theft", "lat": 21.2718, "lng": 81.5758, "datetime": "2026-03-30T20:00:00", "area": "Urla", "source": "crowd", "severity": 2 },
+
+    { "id": 140, "type": "harassment", "lat": 21.2905, "lng": 81.7110, "datetime": "2026-05-11T21:00:00", "area": "Birgaon", "source": "crowd", "severity": 2 },
+    { "id": 141, "type": "chain_snatching", "lat": 21.2895, "lng": 81.7095, "datetime": "2026-04-30T18:30:00", "area": "Birgaon", "source": "crowd", "severity": 3 },
+    { "id": 142, "type": "stalking", "lat": 21.2918, "lng": 81.7120, "datetime": "2026-04-16T22:00:00", "area": "Birgaon Industrial Zone", "source": "crowd", "severity": 4 },
+    { "id": 143, "type": "theft", "lat": 21.2885, "lng": 81.7088, "datetime": "2026-03-28T20:45:00", "area": "Birgaon", "source": "crowd", "severity": 2 },
+
+    { "id": 150, "type": "harassment", "lat": 21.2185, "lng": 81.6190, "datetime": "2026-05-07T20:00:00", "area": "Pachpedi Naka", "source": "crowd", "severity": 2 },
+    { "id": 151, "type": "chain_snatching", "lat": 21.2175, "lng": 81.6175, "datetime": "2026-04-24T19:00:00", "area": "Pachpedi Naka", "source": "crowd", "severity": 3 },
+    { "id": 152, "type": "stalking", "lat": 21.2192, "lng": 81.6200, "datetime": "2026-04-11T21:30:00", "area": "Pachpedi Naka", "source": "crowd", "severity": 4 },
+    { "id": 153, "type": "theft", "lat": 21.2168, "lng": 81.6182, "datetime": "2026-03-22T20:00:00", "area": "Pachpedi Naka Market", "source": "crowd", "severity": 2 },
+
+    { "id": 160, "type": "harassment", "lat": 21.2248, "lng": 81.6358, "datetime": "2026-05-06T21:00:00", "area": "Fafadih", "source": "crowd", "severity": 2 },
+    { "id": 161, "type": "chain_snatching", "lat": 21.2235, "lng": 81.6345, "datetime": "2026-04-26T18:45:00", "area": "Fafadih", "source": "crowd", "severity": 3 },
+    { "id": 162, "type": "stalking", "lat": 21.2260, "lng": 81.6370, "datetime": "2026-04-14T22:15:00", "area": "Fafadih", "source": "crowd", "severity": 4 },
+    { "id": 163, "type": "theft", "lat": 21.2242, "lng": 81.6360, "datetime": "2026-03-28T21:00:00", "area": "Fafadih Chowk", "source": "crowd", "severity": 2 },
+
+    { "id": 170, "type": "harassment", "lat": 21.2108, "lng": 81.7108, "datetime": "2026-05-09T21:30:00", "area": "Sarona", "source": "crowd", "severity": 2 },
+    { "id": 171, "type": "stalking", "lat": 21.2095, "lng": 81.7095, "datetime": "2026-04-27T22:00:00", "area": "Sarona", "source": "crowd", "severity": 4 },
+    { "id": 172, "type": "theft", "lat": 21.2115, "lng": 81.7118, "datetime": "2026-04-14T20:30:00", "area": "Sarona", "source": "crowd", "severity": 2 },
+
+    { "id": 180, "type": "harassment", "lat": 21.2508, "lng": 81.6328, "datetime": "2026-05-04T20:30:00", "area": "Avanti Vihar", "source": "crowd", "severity": 2 },
+    { "id": 181, "type": "stalking", "lat": 21.2495, "lng": 81.6315, "datetime": "2026-04-21T21:45:00", "area": "Avanti Vihar", "source": "crowd", "severity": 4 },
+    { "id": 182, "type": "theft", "lat": 21.2518, "lng": 81.6340, "datetime": "2026-04-08T20:00:00", "area": "Avanti Vihar", "source": "crowd", "severity": 2 },
+
+    { "id": 190, "type": "harassment", "lat": 21.2555, "lng": 81.6428, "datetime": "2026-05-03T21:00:00", "area": "Shankar Nagar", "source": "crowd", "severity": 2 },
+    { "id": 191, "type": "chain_snatching", "lat": 21.2548, "lng": 81.6415, "datetime": "2026-04-19T19:15:00", "area": "Shankar Nagar", "source": "crowd", "severity": 3 },
+    { "id": 192, "type": "stalking", "lat": 21.2562, "lng": 81.6440, "datetime": "2026-04-06T22:00:00", "area": "Shankar Nagar", "source": "crowd", "severity": 4 },
+
+    { "id": 200, "type": "harassment", "lat": 21.2685, "lng": 81.6388, "datetime": "2026-05-05T20:45:00", "area": "Nehru Nagar", "source": "crowd", "severity": 2 },
+    { "id": 201, "type": "theft", "lat": 21.2672, "lng": 81.6375, "datetime": "2026-04-23T21:00:00", "area": "Nehru Nagar", "source": "crowd", "severity": 2 },
+    { "id": 202, "type": "stalking", "lat": 21.2698, "lng": 81.6400, "datetime": "2026-04-10T22:30:00", "area": "Nehru Nagar", "source": "crowd", "severity": 4 },
+
+    { "id": 210, "type": "harassment", "lat": 21.2658, "lng": 81.6228, "datetime": "2026-05-07T21:15:00", "area": "Labhandi", "source": "crowd", "severity": 2 },
+    { "id": 211, "type": "stalking", "lat": 21.2645, "lng": 81.6215, "datetime": "2026-04-25T22:00:00", "area": "Labhandi", "source": "crowd", "severity": 4 },
+    { "id": 212, "type": "theft", "lat": 21.2668, "lng": 81.6240, "datetime": "2026-04-12T20:30:00", "area": "Labhandi", "source": "crowd", "severity": 2 },
+
+    { "id": 220, "type": "harassment", "lat": 21.3055, "lng": 81.6508, "datetime": "2026-05-10T22:00:00", "area": "Bhanpuri", "source": "crowd", "severity": 2 },
+    { "id": 221, "type": "stalking", "lat": 21.3042, "lng": 81.6495, "datetime": "2026-04-28T21:30:00", "area": "Bhanpuri", "source": "crowd", "severity": 4 },
+    { "id": 222, "type": "theft", "lat": 21.3068, "lng": 81.6520, "datetime": "2026-04-15T20:00:00", "area": "Bhanpuri", "source": "crowd", "severity": 2 },
+
+    { "id": 230, "type": "harassment", "lat": 21.1900, "lng": 81.6155, "datetime": "2026-05-08T22:00:00", "area": "Rawabhata", "source": "crowd", "severity": 2 },
+    { "id": 231, "type": "stalking", "lat": 21.1885, "lng": 81.6140, "datetime": "2026-04-26T21:45:00", "area": "Rawabhata", "source": "crowd", "severity": 4 },
+
+    { "id": 240, "type": "harassment", "lat": 21.2628, "lng": 81.6562, "datetime": "2026-05-06T21:00:00", "area": "Kabir Nagar", "source": "crowd", "severity": 2 },
+    { "id": 241, "type": "theft", "lat": 21.2615, "lng": 81.6548, "datetime": "2026-04-24T20:30:00", "area": "Kabir Nagar", "source": "crowd", "severity": 2 },
+
+    { "id": 250, "type": "harassment", "lat": 21.1758, "lng": 81.5668, "datetime": "2026-05-09T22:30:00", "area": "Amleshwar", "source": "crowd", "severity": 2 },
+    { "id": 251, "type": "stalking", "lat": 21.1742, "lng": 81.5650, "datetime": "2026-04-27T21:00:00", "area": "Amleshwar", "source": "crowd", "severity": 4 }
+  ]
+}

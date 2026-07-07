@@ -1,0 +1,42 @@
+# ============================================================================
+# SafeRaipur — live data ingestion, every 30 minutes, forever, for free.
+# ============================================================================
+# This replaces the Render server for all background work. GitHub Actions on
+# a public repo has no meaningful limits for a job this small (~1-2 min/run).
+#
+# Setup (one time):
+#   Repo → Settings → Secrets and variables → Actions → New repository secret
+#     SUPABASE_URL          = https://YOUR-PROJECT.supabase.co
+#     SUPABASE_SERVICE_KEY  = service_role key (Supabase → Settings → API)
+# ============================================================================
+name: Ingest crime data
+
+on:
+  schedule:
+    - cron: "*/30 * * * *"     # every 30 minutes (UTC)
+  workflow_dispatch:            # ...and a manual "Run workflow" button
+
+concurrency:
+  group: ingest                 # never let two runs overlap
+  cancel-in-progress: false
+
+jobs:
+  ingest:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install deps
+        run: pip install -r ingestion/requirements.txt
+
+      - name: Run pipeline
+        working-directory: ingestion
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+        run: python main.py
