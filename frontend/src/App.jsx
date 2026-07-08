@@ -127,13 +127,27 @@ export default function App() {
   }, [routeMode, routePts, showToast]);
 
   const startRoutePlanning = () => {
-    if (routeMode === 'shown' || routeMode === 'loading') {
+    // ANY non-idle state → reset. (Previously only 'shown'/'loading' reset,
+    // so if you were mid-picking you could never back out. State machines
+    // need an exit from EVERY state.)
+    if (routeMode !== 'idle') {
       setRouteMode('idle'); setRoutePlan(null); setRoutePts({ start: null, end: null });
     } else {
       setArming(false);
       setRouteMode('pick-start');
     }
   };
+
+  // Escape key also cancels route picking / reporting — standard UX escape hatch
+  useEffect(() => {
+    const onKey = (e) => {
+      if (e.key !== 'Escape') return;
+      setRouteMode('idle'); setRoutePlan(null); setRoutePts({ start: null, end: null });
+      setArming(false);
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, []);
 
   /**
    * Route from the user's current location to a chosen police station.
@@ -257,6 +271,8 @@ export default function App() {
         hotspots={hotspots}
         safetyScore={safetyScore}
         routeShown={routeMode !== 'idle'}
+        routeMode={routeMode}
+        routePts={routePts}
         routePlan={routePlan}
         onToggleRoute={startRoutePlanning}
         geoStatus={geo.status}
@@ -306,10 +322,15 @@ export default function App() {
 
 function CursorGlow() {
   const ref = useRef(null);
+  // Touch devices have no cursor — rendering this + a mousemove listener is
+  // pure wasted work on phones. Skip it entirely.
+  const isTouch = typeof window !== 'undefined' && window.matchMedia('(pointer: coarse)').matches;
   useEffect(() => {
+    if (isTouch) return;
     const move = (e) => { if (ref.current) ref.current.style.transform = `translate(${e.clientX}px,${e.clientY}px)`; };
     window.addEventListener('mousemove', move);
     return () => window.removeEventListener('mousemove', move);
-  }, []);
+  }, [isTouch]);
+  if (isTouch) return null;
   return <div className="cursor-glow" ref={ref} />;
 }

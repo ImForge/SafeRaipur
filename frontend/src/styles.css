@@ -617,3 +617,59 @@ body{font-family:var(--ui);background:var(--void);color:var(--text);
 .hl-label{ font-size:11px; font-weight:600; color:var(--text, #E8EDF6); }
 .hl-note{ font-size:9.5px; color:var(--text-dim, #7E8AA0); margin-top:1px; line-height:1.4; }
 .hl-call{ margin-left:auto; color:#FF6178; flex-shrink:0; }
+
+/* ============================================================
+   SAFERAIPUR v2.2 — mobile performance + nav + satellite + about
+   ============================================================ */
+
+/* ---- PERFORMANCE: strip GPU-heavy effects on touch devices ----
+   backdrop-filter blur re-blurs everything behind a panel EVERY frame —
+   the single biggest cause of phone lag. Fixed animated overlays (grain,
+   scanline, blooms) force constant full-screen compositing. None of them
+   are worth 20fps. Solid backgrounds on phones instead. */
+@media (pointer: coarse), (max-width: 760px) {
+  .cursor-glow, .grain, .scan, .bloom { display: none !important; }
+  .glass, .side, .topbar, .dock {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+  .glass, .side { background: rgba(10, 15, 26, .96) !important; }
+  .corridor { animation: none !important; }
+  .spark { display: none; } /* sparklines are decorative; skip on phones */
+}
+
+/* satellite toggle button on map */
+.sat-toggle{
+  width:34px; height:34px; border-radius:9px; cursor:pointer;
+  background:rgba(10,15,26,.9); border:1px solid rgba(255,255,255,.15);
+  color:#E8EDF6; font-size:16px; line-height:1; margin-bottom:6px;
+  transition:all .2s;
+}
+.sat-toggle:hover{ border-color:rgba(45,212,191,.5); }
+.sat-toggle.on{ border-color:#2DD4BF; box-shadow:0 0 10px rgba(45,212,191,.4); }
+
+/* source link inside incident popups */
+.pv-src{
+  display:inline-block; margin:6px 0 2px; font-size:10.5px;
+  color:#2DD4BF; text-decoration:none; border-bottom:1px dotted rgba(45,212,191,.5);
+}
+.pv-src:hover{ color:#7EEADD; }
+
+/* Navigate in Google Maps button */
+.gmaps-btn{
+  display:flex; align-items:center; justify-content:center; gap:8px;
+  margin-top:9px; padding:9px 12px; border-radius:10px; text-decoration:none;
+  background:rgba(77,163,255,.10); border:1px solid rgba(77,163,255,.4);
+  color:#4DA3FF; font-family:'Martian Mono',monospace; font-size:10.5px;
+  letter-spacing:.05em; transition:all .2s;
+}
+.gmaps-btn:hover{ background:rgba(77,163,255,.18); box-shadow:0 0 14px rgba(77,163,255,.25); }
+
+/* credit / contact */
+.credit{
+  margin-top:10px; padding-top:10px; border-top:1px solid rgba(255,255,255,.08);
+  font-size:10.5px; line-height:1.6; color:var(--text-dim, #7E8AA0);
+}
+.credit a{ color:#2DD4BF; text-decoration:none; }
+.credit a:hover{ text-decoration:underline; }
+.data-note p{ margin:0 0 9px; }

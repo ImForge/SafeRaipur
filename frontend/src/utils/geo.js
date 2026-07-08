@@ -56,3 +56,30 @@ export function estimateDriveMinutes(distanceMeters, avgSpeedKmh = 22) {
   const hours = distanceMeters / 1000 / avgSpeedKmh;
   return Math.max(1, Math.round(hours * 60));
 }
+
+/**
+ * "Open in Google Maps" deep link for a route.
+ *
+ * HONESTY NOTE: Google routes with its own engine — it won't follow our
+ * exact safe path. To nudge it, we sample up to 4 intermediate points from
+ * OUR safest route and pass them as waypoints, so Google's navigation
+ * approximately traces the safe corridor. Real turn-by-turn (voice, GPS
+ * follow, rerouting) is Google's superpower; picking WHICH corridor is ours.
+ * This button combines both.
+ */
+export function gmapsUrl(start, end, routeCoords) {
+  const wp = [];
+  if (routeCoords && routeCoords.length > 12) {
+    const step = Math.floor(routeCoords.length / 5);
+    for (let i = step; i < routeCoords.length - step && wp.length < 4; i += step) {
+      wp.push(`${routeCoords[i][0].toFixed(5)},${routeCoords[i][1].toFixed(5)}`);
+    }
+  }
+  return (
+    `https://www.google.com/maps/dir/?api=1` +
+    `&origin=${start.lat},${start.lng}` +
+    `&destination=${end.lat},${end.lng}` +
+    `&travelmode=walking` +
+    (wp.length ? `&waypoints=${encodeURIComponent(wp.join('|'))}` : '')
+  );
+}

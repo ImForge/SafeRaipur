@@ -29,10 +29,40 @@ export default function MapView({
     if (mapRef.current) return;
     const map = L.map(containerRef.current, { center: CENTER, zoom: 12, zoomControl: false });
     L.control.zoom({ position: 'bottomright' }).addTo(map);
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}{r}.png',
-      { subdomains: 'abcd', maxZoom: 19, attribution: '© OSM · CARTO' }).addTo(map);
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_only_labels/{z}/{x}/{y}{r}.png',
-      { subdomains: 'abcd', maxZoom: 19, opacity: .5 }).addTo(map);
+
+    // two base styles: dark ops (default) and satellite (Esri World Imagery)
+    const dark = L.layerGroup([
+      L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}{r}.png',
+        { subdomains: 'abcd', maxZoom: 19, attribution: '© OSM · CARTO' }),
+      L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_only_labels/{z}/{x}/{y}{r}.png',
+        { subdomains: 'abcd', maxZoom: 19, opacity: .5 }),
+    ]).addTo(map);
+    const sat = L.layerGroup([
+      L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+        { maxZoom: 19, attribution: 'Imagery © Esri' }),
+      L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_only_labels/{z}/{x}/{y}{r}.png',
+        { subdomains: 'abcd', maxZoom: 19, opacity: .8 }),
+    ]);
+
+    // toggle button (Leaflet custom control, bottom-right above zoom)
+    const Toggle = L.Control.extend({
+      options: { position: 'bottomright' },
+      onAdd() {
+        const btn = L.DomUtil.create('button', 'sat-toggle');
+        btn.innerHTML = '🛰';
+        btn.title = 'Toggle satellite view';
+        let isSat = false;
+        L.DomEvent.on(btn, 'click', (e) => {
+          L.DomEvent.stopPropagation(e);
+          isSat = !isSat;
+          if (isSat) { map.removeLayer(dark); sat.addTo(map); btn.classList.add('on'); }
+          else { map.removeLayer(sat); dark.addTo(map); btn.classList.remove('on'); }
+        });
+        return btn;
+      },
+    });
+    map.addControl(new Toggle());
+
     mapRef.current = map;
     setTimeout(() => map.invalidateSize(), 200);
     return () => { map.remove(); mapRef.current = null; };
@@ -68,8 +98,11 @@ export default function MapView({
     const pts = (riskCells && riskCells.length > 0)
       ? riskCells.map(c => [c.lat, c.lng, c.score])                 // precomputed KDE
       : incidents.map(i => [i.lat, i.lng, weight(i) / 10]);         // fallback pre-ingest
+    // smaller radius/blur on phones = far fewer pixels to composite per frame
+    const mobile = window.matchMedia('(pointer: coarse)').matches;
     layers.current.heat = L.heatLayer(pts, {
-      radius: 38, blur: 30, minOpacity: .35, maxZoom: 17, max: 1,
+      radius: mobile ? 26 : 38, blur: mobile ? 18 : 30,
+      minOpacity: .35, maxZoom: 17, max: 1,
       gradient: { 0: 'rgba(45,212,191,0)', .25: 'rgba(45,212,191,.55)', .45: 'rgba(255,166,61,.7)', .65: 'rgba(255,59,92,.82)', .85: 'rgba(255,59,92,.95)', 1: 'rgba(255,90,120,1)' },
     }).addTo(map);
   }, [riskCells, incidents]);
@@ -107,6 +140,7 @@ export default function MapView({
           <div class="pv-area">${i.area || (isLive ? 'Community report' : 'Unknown')}</div>
           ${i.title ? `<div class="pv-meta" style="max-width:230px">${i.title}</div>` : ''}
           <div class="pv-meta">${when}<br>Source: ${i.source === 'news' ? 'News-verified' : i.is_verified ? 'Community · Verified' : 'Community'} · Sev ${sev}/10</div>
+          ${i.source_url ? `<a class="pv-src" href="${i.source_url}" target="_blank" rel="noopener noreferrer">Read source article ↗</a>` : ''}
           <div class="pv-bar"><i style="width:${sev * 10}%;background:${col};box-shadow:0 0 8px ${col};"></i></div>`,
           { closeButton: false })
         .on('mouseover', function () { this.openPopup(); })

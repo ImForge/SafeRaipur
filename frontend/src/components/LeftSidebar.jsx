@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { scoreColor, TYPE_LABEL, isNight } from '../utils/risk.js';
-import { fmtDistance, estimateDriveMinutes } from '../utils/geo.js';
+import { fmtDistance, estimateDriveMinutes, gmapsUrl } from '../utils/geo.js';
 import { HELPLINES, activeProtocols } from '../utils/safety.js';
 
 /* ── animated counter hook ── */
@@ -104,7 +104,7 @@ function Forecast() {
   );
 }
 
-export default function LeftSidebar({ timeOfDay, incidents, hotspots, safetyScore, routeShown, routePlan, onToggleRoute, geoStatus, onRequestLocation, nearestStations, onRouteToStation }) {
+export default function LeftSidebar({ timeOfDay, incidents, hotspots, safetyScore, routeShown, routeMode, routePts, routePlan, onToggleRoute, geoStatus, onRequestLocation, nearestStations, onRouteToStation }) {
   const [sheetOpen, setSheetOpen] = useState(false);
   const [mobileTab, setMobileTab] = useState('overview');
 
@@ -293,7 +293,7 @@ export default function LeftSidebar({ timeOfDay, incidents, hotspots, safetyScor
                 <circle cx="6" cy="19" r="2.5"/><circle cx="18" cy="5" r="2.5"/>
                 <path d="M8.5 19H14a4 4 0 0 0 0-8H10a4 4 0 0 1 0-8h5.5"/>
               </svg>
-              {routeShown ? 'Clear Route' : 'Plot Safest Route'}
+              {routeMode === 'pick-start' || routeMode === 'pick-end' ? 'Cancel' : routeShown ? 'Clear Route' : 'Plot Safest Route'}
             </button>
             {routeShown && !routePlan && (
               <div className="route-info">
@@ -316,6 +316,14 @@ export default function LeftSidebar({ timeOfDay, incidents, hotspots, safetyScor
                   <div className="route-note">
                     Safest of {routePlan.routes.length} route{routePlan.routes.length > 1 ? 's' : ''} · passes {best.hotspotHits} hot zone{best.hotspotHits === 1 ? '' : 's'} · via {routePlan.engine}. A data-based suggestion — stay alert.
                   </div>
+                  {routePts?.start && routePts?.end && (
+                    <a className="gmaps-btn"
+                      href={gmapsUrl(routePts.start, routePts.end, best.coords)}
+                      target="_blank" rel="noopener noreferrer">
+                      <svg viewBox="0 0 24 24" width="13" fill="none" stroke="currentColor" strokeWidth="2.3" strokeLinecap="round" strokeLinejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                      Navigate in Google Maps
+                    </a>
+                  )}
                 </div>
               );
             })()}
@@ -415,20 +423,41 @@ export default function LeftSidebar({ timeOfDay, incidents, hotspots, safetyScor
             </div>
           </div>
           <div className="block">
+            <div className="block-head">
+              <div className="panel-label"><span className="tick" />About SafeRaipur</div>
+            </div>
             <div className="data-note">
               <div className="data-note-head">
                 <svg viewBox="0 0 24 24" width="13" fill="none" stroke="currentColor"
                   strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
                   <circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/>
                 </svg>
-                <span>About this data</span>
+                <span>How this works</span>
               </div>
               <p>
-                This map shows <b>reported</b> incidents only. The real numbers are far
-                higher — most harassment and stalking is never reported to police or
-                covered by news. An area looking quiet here does not mean it is safe.
-                It often just means people there stay silent.
+                Two data streams power this map. <b>News:</b> an automated pipeline
+                scans English and Hindi news coverage of Raipur crime every 30
+                minutes — tap any incident dot to open the original article.
+                <b> Community:</b> anonymous reports submitted through this app,
+                pushed live to every open map within a second. Community reports
+                are labeled unverified and carry half weight until reviewed.
               </p>
+              <p>
+                <b>Privacy:</b> free public tool. No accounts, no tracking, no ads.
+                Reports are anonymous. If you enable location, it is used only on
+                your device for nearest-station and routing math — it is never sent
+                to our servers or stored anywhere.
+              </p>
+              <p>
+                <b>Honest limits:</b> this shows <b>reported</b> incidents only. Real
+                numbers are far higher — most harassment is never reported. A quiet
+                area is not a guaranteed safe area. Routes are suggestions ranked on
+                historical data; stay alert regardless.
+              </p>
+              <div className="credit">
+                Built by <b>Shivam</b> · <a href="mailto:cdrshivam@gmail.com">cdrshivam@gmail.com</a><br/>
+                Feedback, corrections &amp; collaboration welcome.
+              </div>
             </div>
           </div>
 

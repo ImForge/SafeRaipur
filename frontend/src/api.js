@@ -14,7 +14,7 @@ export const api = {
   async listIncidents() {
     const { data, error } = await supabase
       .from('incidents')
-      .select('id,type,severity,area,title,source,occurred_at,lat,lng')
+      .select('id,type,severity,area,title,source,source_url,occurred_at,lat,lng')
       .gte('occurred_at', DAYS_180)
       .order('occurred_at', { ascending: false })
       .limit(2000);

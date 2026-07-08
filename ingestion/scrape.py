@@ -29,12 +29,19 @@ QUERIES = [
     ("raipur assault",          "en-IN"),
     ("raipur robbery",          "en-IN"),
     ("raipur harassment woman", "en-IN"),
+    ("raipur police arrest",    "en-IN"),
+    ("raipur murder",           "en-IN"),
+    ("raipur snatching",        "en-IN"),
     # Hindi — this is where the volume is
     ("रायपुर चोरी",             "hi-IN"),
     ("रायपुर लूट",              "hi-IN"),
     ("रायपुर हत्या",            "hi-IN"),
     ("रायपुर छेड़छाड़",          "hi-IN"),
     ("रायपुर मारपीट",           "hi-IN"),
+    ("रायपुर अपराध",            "hi-IN"),
+    ("रायपुर चाकूबाजी",         "hi-IN"),
+    ("रायपुर स्नैचिंग",          "hi-IN"),
+    ("रायपुर गिरफ्तार",         "hi-IN"),
 ]
 
 UA = {"User-Agent": "SafeRaipurBot/2.0 (+https://saferaipur.vercel.app; civic safety project)"}
