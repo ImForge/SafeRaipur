@@ -14,7 +14,7 @@ const CENTER = [21.2200, 81.6500];
 export default function MapView({
   incidents, hotspots, riskCells, alerts, stations,
   arming, routeMode, routePts, routePlan,
-  onMapClick, focusedLatLng,
+  onMapClick, focusedLatLng, userCoords,
 }) {
   const containerRef = useRef(null);
   const mapRef = useRef(null);
@@ -194,6 +194,22 @@ export default function MapView({
     const best = routePlan.routes[0];
     map.flyToBounds(L.latLngBounds(best.coords).pad(0.25), { duration: 1.1 });
   }, [routePts, routePlan]);
+
+  /* ------- user location pin (blue, pulsing) ------- */
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!map) return;
+    clear('user');
+    if (!userCoords) return;
+    layers.current.user = L.layerGroup().addTo(map);
+    L.marker([userCoords.lat, userCoords.lng], {
+      icon: L.divIcon({
+        className: '', iconSize: [0, 0],
+        html: `<div class="user-loc"><div class="ul-pulse"></div><div class="ul-dot"></div></div>`,
+      }), zIndexOffset: 1100,
+    }).bindPopup('<div class="pv-area">You are here</div><div class="pv-meta">Location stays on your device</div>')
+      .addTo(layers.current.user);
+  }, [userCoords]);
 
   /* ------- fly to focus ------- */
   useEffect(() => {

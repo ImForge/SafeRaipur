@@ -20,7 +20,11 @@ is stable regardless of how much data exists.
 """
 
 import math
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
+
+# Raipur local time. Day/night classification MUST match the frontend
+# (frontend/src/utils/risk.js) or the heatmap and sidebar will disagree.
+IST = timezone(timedelta(hours=5, minutes=30))
 
 LAMBDA = 0.00385
 BANDWIDTH = 0.002
@@ -36,7 +40,10 @@ def _decay(occurred_at: datetime) -> float:
 
 
 def _is_night(dt: datetime) -> bool:
-    return dt.hour < 6 or dt.hour >= 19
+    if dt.tzinfo is None:
+        dt = dt.replace(tzinfo=timezone.utc)
+    local = dt.astimezone(IST)
+    return local.hour < 6 or local.hour >= 19
 
 
 def compute_grid(points, time_of_day: str):

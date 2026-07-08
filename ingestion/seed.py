@@ -20,7 +20,7 @@ from datetime import datetime, timezone
 
 import requests
 
-from risk_grid import compute_grid
+from risk_grid import compute_grid, IST
 
 SUPABASE_URL = os.environ["SUPABASE_URL"].rstrip("/")
 SERVICE_KEY = os.environ["SUPABASE_SERVICE_KEY"]
@@ -42,7 +42,9 @@ def run():
         rows.append({
             "type": inc["type"], "severity": inc["severity"],
             "area": inc.get("area"), "source": "seed",
-            "url_hash": h, "occurred_at": inc["datetime"],
+            # seed times are authored in Raipur local time — attach IST so
+            # Postgres stores the correct moment instead of assuming UTC
+            "url_hash": h, "occurred_at": inc["datetime"] + "+05:30",
             "lat": inc["lat"], "lng": inc["lng"],
         })
 
@@ -56,7 +58,7 @@ def run():
     # first risk grid
     points = [{
         "lat": x["lat"], "lng": x["lng"], "severity": x["severity"],
-        "occurred_at": datetime.fromisoformat(x["occurred_at"]).replace(tzinfo=timezone.utc),
+        "occurred_at": datetime.fromisoformat(x["occurred_at"]).replace(tzinfo=IST),
         "trust": 1.0,
     } for x in rows]
     cells = compute_grid(points, "night") + compute_grid(points, "day")

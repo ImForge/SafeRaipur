@@ -161,4 +161,4 @@ Later this becomes an admin panel; for now the SQL editor IS the admin panel.
 - Community reports are unverified by default and weighted at 0.5 until
   moderated — the map explicitly labels sources.
 - Safest route ranks by *historical* data. It's a suggestion, not a guarantee,
-  an
+  and the UI says so.

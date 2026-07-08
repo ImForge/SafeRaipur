@@ -1,5 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { scoreColor, TYPE_LABEL, isNight } from '../utils/risk.js';
+import { fmtDistance, estimateDriveMinutes } from '../utils/geo.js';
+import { HELPLINES, activeProtocols } from '../utils/safety.js';
 
 /* ── animated counter hook ── */
 function useCounter(target, duration = 1100) {
@@ -102,7 +104,7 @@ function Forecast() {
   );
 }
 
-export default function LeftSidebar({ timeOfDay, incidents, hotspots, safetyScore, routeShown, routePlan, onToggleRoute }) {
+export default function LeftSidebar({ timeOfDay, incidents, hotspots, safetyScore, routeShown, routePlan, onToggleRoute, geoStatus, onRequestLocation, nearestStations, onRouteToStation }) {
   const [sheetOpen, setSheetOpen] = useState(false);
   const [mobileTab, setMobileTab] = useState('overview');
 
@@ -116,6 +118,12 @@ export default function LeftSidebar({ timeOfDay, incidents, hotspots, safetyScor
 
   const incCount = useCounter(incidents.length);
   const zoneCount = useCounter(hotspots.filter(h => h.score >= 30).length);
+
+  // real live metric: how many events in the last 24 hours
+  const dayAgo = Date.now() - 864e5;
+  const last24h = incidents.filter(i => new Date(i.dt || i.occurred_at) >= dayAgo).length;
+  const recent24 = useCounter(last24h);
+  const stationCount = nearestStations && nearestStations.length ? nearestStations.length : 0;
 
   // distribution
   const cats = { Assault:0, Harassment:0, Stalking:0, Snatching:0, Theft:0 };
@@ -170,12 +178,6 @@ export default function LeftSidebar({ timeOfDay, incidents, hotspots, safetyScor
                 <div className="score-meta">
                   <div className="score-status" style={{ color: col }}>{statusLabel}</div>
                   <div className="score-desc">{statusDesc}</div>
-                  <div className="score-delta">
-                    <svg viewBox="0 0 24 24" width="10" fill="none" stroke="currentColor" strokeWidth="3">
-                      <path d="M7 17L17 7M17 7H9M17 7v8"/>
-                    </svg>
-                    +6% vs last week
-                  </div>
                 </div>
               </div>
             </div>
@@ -198,15 +200,24 @@ export default function LeftSidebar({ timeOfDay, incidents, hotspots, safetyScor
                 <div className="accent-bar" />
               </div>
               <div className="metric" style={{ color:'var(--teal)' }}>
-                <div className="mlabel">Patrol Units</div>
-                <div className="mval">12</div>
-                <div className="mfoot"><span style={{ color:'var(--teal)' }}>●</span> All active</div>
+                <div className="mlabel">Reports · 24h</div>
+                <div className="mval">{recent24}</div>
+                <div className="mfoot"><span style={{ color:'var(--teal)' }}>●</span> Live activity</div>
                 <div className="accent-bar" />
               </div>
               <div className="metric" style={{ color:'var(--crimson-soft)' }}>
-                <div className="mlabel">Avg Response</div>
-                <div className="mval">8<span style={{ fontSize:12 }}>m</span></div>
-                <div className="mfoot"><span style={{ color:'var(--amber)' }}>▲</span> +1m at night</div>
+                <div className="mlabel">Nearest Station</div>
+                {nearestStations && nearestStations.length ? (
+                  <>
+                    <div className="mval" style={{ fontSize:19 }}>{fmtDistance(nearestStations[0].distance_m)}</div>
+                    <div className="mfoot" style={{ color:'var(--text-dim)' }}>{nearestStations[0].name}</div>
+                  </>
+                ) : (
+                  <>
+                    <div className="mval" style={{ fontSize:15 }}>—</div>
+                    <div className="mfoot" style={{ color:'var(--amber)' }}>Enable location</div>
+                  </>
+                )}
                 <div className="accent-bar" />
               </div>
             </div>
@@ -310,7 +321,99 @@ export default function LeftSidebar({ timeOfDay, incidents, hotspots, safetyScor
             })()}
           </div>
 
-          {/* Data awareness note */}
+          {/* Nearest Police Stations (location-based) */}
+          <div className="block">
+            <div className="block-head">
+              <div className="panel-label">
+                <span className="tick" style={{ background:'var(--teal)', boxShadow:'0 0 8px var(--teal)' }} />
+                Nearest Police Stations
+              </div>
+            </div>
+            {(!nearestStations || nearestStations.length === 0) ? (
+              <div className="loc-cta">
+                <p>Share your location to see the closest stations and route to them. Your location stays on your device — it is never sent or stored.</p>
+                <button className="loc-btn" onClick={onRequestLocation}
+                  disabled={geoStatus === 'locating'}>
+                  {geoStatus === 'locating' ? 'Locating…'
+                    : geoStatus === 'denied' ? 'Location blocked — enable in browser'
+                    : geoStatus === 'unavailable' ? 'Location unavailable'
+                    : 'Enable location'}
+                </button>
+              </div>
+            ) : (
+              <div className="station-list">
+                {nearestStations.slice(0, 4).map((s, i) => {
+                  const mins = estimateDriveMinutes(s.distance_m);
+                  return (
+                    <div key={i} className="station-row">
+                      <div className="st-info">
+                        <div className="st-name">{s.name}</div>
+                        <div className="st-meta">{fmtDistance(s.distance_m)} · ~{mins} min drive
+                          <span className="st-tip" title="Estimated driving time from this station under normal traffic. This is NOT a guaranteed police response time — real response also depends on call handling, dispatch, and unit availability.">ⓘ</span>
+                        </div>
+                      </div>
+                      <button className="st-route" onClick={() => onRouteToStation(s)}>Route</button>
+                    </div>
+                  );
+                })}
+                <div className="route-note" style={{ marginTop:8 }}>
+                  Drive-time estimates are from the station under normal traffic — not a guaranteed police response time.
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Safety Protocols (data-conditional) */}
+          <div className="block">
+            <div className="block-head">
+              <div className="panel-label">
+                <span className="tick" style={{ background:'var(--amber)', boxShadow:'0 0 8px var(--amber)' }} />
+                Safety Protocols
+              </div>
+            </div>
+            <div className="protocol-list">
+              {activeProtocols({
+                snatch: incidents.filter(i => i.type === 'chain_snatching').length,
+                nightRatio: ratio,
+                topArea: top?.area,
+                topScore: top?.score || 0,
+                harassment: incidents.filter(i => i.type === 'harassment').length,
+                stalking: incidents.filter(i => i.type === 'stalking').length,
+                total: incidents.length,
+              }, 4).map((text, i) => (
+                <div key={i} className="protocol">
+                  <svg viewBox="0 0 24 24" width="13" fill="none" stroke="currentColor" strokeWidth="2.3" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M12 2L4 5v6c0 5 3.4 9.4 8 11 4.6-1.6 8-6 8-11V5l-8-3z"/><path d="M9 12l2 2 4-4"/>
+                  </svg>
+                  <span>{text}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Emergency Helplines */}
+          <div className="block">
+            <div className="block-head">
+              <div className="panel-label">
+                <span className="tick" style={{ background:'var(--crimson)', boxShadow:'0 0 8px var(--crimson)' }} />
+                Emergency Helplines
+              </div>
+            </div>
+            <div className="helpline-list">
+              {HELPLINES.map((h) => (
+                <a key={h.num} className="helpline" href={`tel:${h.num}`}>
+                  <div className="hl-num">{h.num}</div>
+                  <div className="hl-info">
+                    <div className="hl-label">{h.label}</div>
+                    <div className="hl-note">{h.note}</div>
+                  </div>
+                  <svg className="hl-call" viewBox="0 0 24 24" width="15" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6 19.8 19.8 0 0 1-3.1-8.7A2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.3 1.8.6 2.6a2 2 0 0 1-.5 2.1L8.1 9.6a16 16 0 0 0 6 6l1.2-1.2a2 2 0 0 1 2.1-.5c.8.3 1.7.5 2.6.6a2 2 0 0 1 1.7 2z"/>
+                  </svg>
+                </a>
+              ))}
+            </div>
+          </div>
           <div className="block">
             <div className="data-note">
               <div className="data-note-head">

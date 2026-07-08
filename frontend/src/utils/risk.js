@@ -1,6 +1,10 @@
 export const isNight = (dt) => {
-  const h = new Date(dt).getHours();
-  return h < 6 || h >= 19;
+  // Raipur runs on IST (UTC+5:30). Compute the hour in IST explicitly so
+  // day/night means the CITY's day/night — identical for every viewer and
+  // identical to the Python grid classification. Using getHours() (viewer's
+  // local clock) caused the sidebar and heatmap to disagree.
+  const istHour = (new Date(dt).getUTCHours() + 5.5) % 24;
+  return istHour < 6 || istHour >= 19;
 };
 
 export const decay = (dt) => {

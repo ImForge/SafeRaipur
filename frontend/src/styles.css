@@ -539,3 +539,81 @@ body{font-family:var(--ui);background:var(--void);color:var(--text);
   .side-right{ display:none; }             /* hotspot list lives in left panel flow on mobile */
   .toast{ bottom:150px; }
 }
+
+/* ============================================================
+   SAFERAIPUR v2.1 — location, stations, protocols, helplines
+   ============================================================ */
+
+/* user location pin */
+.user-loc{ position:relative; width:0; height:0; }
+.user-loc .ul-dot{
+  position:absolute; left:50%; top:50%; transform:translate(-50%,-50%);
+  width:13px; height:13px; border-radius:50%;
+  background:#4DA3FF; border:2.5px solid #fff;
+  box-shadow:0 0 12px rgba(77,163,255,.9);
+}
+.user-loc .ul-pulse{
+  position:absolute; left:50%; top:50%; width:34px; height:34px;
+  margin:-17px 0 0 -17px; border-radius:50%;
+  background:rgba(77,163,255,.25); animation:ulPulse 2s infinite ease-out;
+}
+@keyframes ulPulse{ from{ transform:scale(.5); opacity:1;} to{ transform:scale(1.8); opacity:0;} }
+
+/* location CTA */
+.loc-cta p{
+  font-size:11px; line-height:1.55; color:var(--text-dim, #7E8AA0);
+  margin:0 0 10px;
+}
+.loc-btn{
+  width:100%; padding:9px 12px; border-radius:10px; cursor:pointer;
+  background:rgba(45,212,191,.10); border:1px solid rgba(45,212,191,.4);
+  color:#2DD4BF; font-family:'Martian Mono',monospace; font-size:11px;
+  letter-spacing:.05em; transition:all .2s;
+}
+.loc-btn:hover{ background:rgba(45,212,191,.18); box-shadow:0 0 14px rgba(45,212,191,.25); }
+.loc-btn:disabled{ opacity:.55; cursor:wait; }
+
+/* nearest stations */
+.station-list{ display:flex; flex-direction:column; gap:7px; }
+.station-row{
+  display:flex; align-items:center; justify-content:space-between; gap:10px;
+  padding:8px 10px; border-radius:10px;
+  background:rgba(255,255,255,.03); border:1px solid rgba(255,255,255,.06);
+}
+.st-name{ font-size:12px; color:var(--text, #E8EDF6); font-weight:600; }
+.st-meta{ font-size:10px; color:var(--text-dim, #7E8AA0); margin-top:2px; }
+.st-tip{ margin-left:5px; cursor:help; opacity:.7; }
+.st-route{
+  padding:6px 12px; border-radius:8px; cursor:pointer; flex-shrink:0;
+  background:rgba(45,212,191,.10); border:1px solid rgba(45,212,191,.35);
+  color:#2DD4BF; font-family:'Martian Mono',monospace; font-size:10px;
+  letter-spacing:.05em; transition:all .2s;
+}
+.st-route:hover{ background:rgba(45,212,191,.2); }
+
+/* safety protocols */
+.protocol-list{ display:flex; flex-direction:column; gap:8px; }
+.protocol{
+  display:flex; gap:9px; align-items:flex-start;
+  padding:9px 10px; border-radius:10px;
+  background:rgba(255,166,61,.05); border:1px solid rgba(255,166,61,.14);
+  font-size:11px; line-height:1.5; color:var(--text, #E8EDF6);
+}
+.protocol svg{ flex-shrink:0; margin-top:1px; color:#FFA63D; }
+
+/* helplines — tel: links, tap to call on phones */
+.helpline-list{ display:flex; flex-direction:column; gap:7px; }
+.helpline{
+  display:flex; align-items:center; gap:11px; text-decoration:none;
+  padding:9px 11px; border-radius:10px;
+  background:rgba(255,59,92,.05); border:1px solid rgba(255,59,92,.16);
+  transition:all .2s;
+}
+.helpline:hover{ background:rgba(255,59,92,.11); border-color:rgba(255,59,92,.35); }
+.hl-num{
+  font-family:'Martian Mono',monospace; font-size:15px; font-weight:700;
+  color:#FF6178; min-width:44px;
+}
+.hl-label{ font-size:11px; font-weight:600; color:var(--text, #E8EDF6); }
+.hl-note{ font-size:9.5px; color:var(--text-dim, #7E8AA0); margin-top:1px; line-height:1.4; }
+.hl-call{ margin-left:auto; color:#FF6178; flex-shrink:0; }

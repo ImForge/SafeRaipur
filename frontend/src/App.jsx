@@ -2,8 +2,10 @@ import { useState, useEffect, useCallback, useRef } from 'react';
 import { api, getAnonymousId } from './api.js';
 import { supabaseConfigured } from './lib/supabase.js';
 import { useRealtime } from './hooks/useRealtime.js';
+import { useGeolocation } from './hooks/useGeolocation.js';
 import { planSafeRoute } from './services/route.js';
-import { computeHotspots } from './utils/risk.js';
+import { stationsByDistance } from './utils/geo.js';
+import { computeHotspots, isNight } from './utils/risk.js';
 import TopBar from './components/TopBar.jsx';
 import LeftSidebar from './components/LeftSidebar.jsx';
 import RightSidebar from './components/RightSidebar.jsx';
@@ -39,6 +41,9 @@ export default function App() {
   const [routeMode, setRouteMode] = useState('idle');
   const [routePts, setRoutePts] = useState({ start: null, end: null });
   const [routePlan, setRoutePlan] = useState(null);
+
+  // user location — opt-in, stays on device (see useGeolocation notes)
+  const geo = useGeolocation();
 
   const [toast, setToast] = useState(null);
   const toastTimer = useRef(null);
@@ -130,6 +135,35 @@ export default function App() {
     }
   };
 
+  /**
+   * Route from the user's current location to a chosen police station.
+   * Requires location; if we don't have it yet, ask for it first.
+   */
+  const routeToStation = useCallback(async (station) => {
+    if (!geo.coords) { geo.request(); showToast('Enable location to route to a station'); return; }
+    const start = geo.coords;
+    const end = { lat: station.lat, lng: station.lng };
+    setArming(false);
+    setRoutePts({ start, end });
+    setRouteMode('loading');
+    setFocusedLatLng(null);
+    try {
+      const plan = await planSafeRoute(start, end, riskCellsRef.current);
+      setRoutePlan(plan);
+      setRouteMode('shown');
+      const best = plan.routes[0];
+      showToast(`Route to ${station.name} · ${(best.distance_m / 1000).toFixed(1)} km · ~${Math.round(best.duration_s / 60)} min`);
+    } catch {
+      setRouteMode('idle');
+      showToast('Could not route to that station — try again');
+    }
+  }, [geo, showToast]);
+
+  // nearest stations, computed only when we have both location + station list
+  const nearestStations = geo.coords && stations.length
+    ? stationsByDistance(geo.coords, stations)
+    : [];
+
   /* ---------------- report submit ---------------- */
   const handleSubmitReport = async (form) => {
     try {
@@ -149,9 +183,20 @@ export default function App() {
   };
 
   /* ---------------- derived data for panels ---------------- */
+  // 1) merge news + community events
   const allEvents = [...incidents, ...reports];
-  const visibleIncidents = activeCat === 'all' ? allEvents
-    : allEvents.filter(i => activeCat === 'sexual_assault'
+
+  // 2) filter by the day/night toggle. This is what makes the SIDEBAR
+  //    respond to the toggle (the map heatmap already filters via its own
+  //    precomputed grid). "Night" = incidents that occurred 7pm–6am.
+  const timeFilteredEvents = allEvents.filter(i => {
+    const night = isNight(i.dt || i.occurred_at);
+    return timeOfDay === 'night' ? night : !night;
+  });
+
+  // 3) apply the category chips on top of the time filter
+  const visibleIncidents = activeCat === 'all' ? timeFilteredEvents
+    : timeFilteredEvents.filter(i => activeCat === 'sexual_assault'
         ? (i.type === 'sexual_assault' || i.type === 'assault' || i.type === 'murder')
         : i.type === activeCat);
 
@@ -184,6 +229,7 @@ export default function App() {
         routePlan={routePlan}
         onMapClick={handleMapClick}
         focusedLatLng={focusedLatLng}
+        userCoords={geo.coords}
       />
 
       {/* surge banner — most important thing on screen when active */}
@@ -213,6 +259,10 @@ export default function App() {
         routeShown={routeMode !== 'idle'}
         routePlan={routePlan}
         onToggleRoute={startRoutePlanning}
+        geoStatus={geo.status}
+        onRequestLocation={geo.request}
+        nearestStations={nearestStations}
+        onRouteToStation={routeToStation}
       />
       <RightSidebar
         hotspots={hotspots}
