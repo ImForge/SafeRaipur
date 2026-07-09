@@ -33,9 +33,14 @@ SERVICE_KEY = os.environ["SUPABASE_SERVICE_KEY"]
 
 HEADERS = {
     "apikey": SERVICE_KEY,
-    "Authorization": f"Bearer {SERVICE_KEY}",
     "Content-Type": "application/json",
 }
+# Key-format compatibility: legacy Supabase keys are JWTs ("eyJ...") and need
+# an Authorization: Bearer header too. The NEW keys ("sb_secret_...") must be
+# sent in apikey ONLY — putting them in Authorization makes PostgREST try to
+# parse them as a JWT and reply 401 Unauthorized.
+if not SERVICE_KEY.startswith("sb_"):
+    HEADERS["Authorization"] = f"Bearer {SERVICE_KEY}"
 
 
 def sb(path: str) -> str:
