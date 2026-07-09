@@ -4,7 +4,7 @@ import { fmtDistance, estimateDriveMinutes, gmapsUrl } from '../utils/geo.js';
 import { HELPLINES, activeProtocols } from '../utils/safety.js';
 
 // shared palette — used by both the sidebar legend and the Donut component
-const DIST_COLORS = { Assault:'#FF3B5C', Harassment:'#FFA63D', Stalking:'#FF6178', Snatching:'#FFC074', Theft:'#2DD4BF' };
+const DIST_COLORS = { Homicide:'#DC2626', Assault:'#FF3B5C', Robbery:'#F97316', Harassment:'#FFA63D', Stalking:'#FF6178', Snatching:'#FFC074', Theft:'#2DD4BF' };
 
 /* ── animated counter hook ── */
 function useCounter(target, duration = 1100) {
@@ -146,7 +146,7 @@ export default function LeftSidebar({ timeOfDay, incidents, hotspots, safetyScor
   const stationCount = nearestStations && nearestStations.length ? nearestStations.length : 0;
 
   // distribution
-  const cats = { Assault:0, Harassment:0, Stalking:0, Snatching:0, Theft:0 };
+  const cats = { Homicide:0, Assault:0, Robbery:0, Harassment:0, Stalking:0, Snatching:0, Theft:0 };
   incidents.forEach(i => { const l = TYPE_LABEL[i.type]; if (cats[l] != null) cats[l]++; });
   const total = Object.values(cats).reduce((a,b)=>a+b,0) || 1;
 

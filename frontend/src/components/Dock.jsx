@@ -1,6 +1,8 @@
 const CATS = [
   { cat:'all', label:'All', color:'#FF6178' },
+  { cat:'murder', label:'Homicide', color:'#DC2626' },
   { cat:'sexual_assault', label:'Assault', color:'#FF3B5C' },
+  { cat:'robbery', label:'Robbery', color:'#F97316' },
   { cat:'harassment', label:'Harassment', color:'#FFA63D' },
   { cat:'chain_snatching', label:'Snatching', color:'#FFC074' },
   { cat:'stalking', label:'Stalking', color:'#C084FC' },

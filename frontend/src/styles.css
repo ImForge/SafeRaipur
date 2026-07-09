@@ -892,7 +892,7 @@ body{font-family:var(--ui);background:var(--void);color:var(--text);
 /* ---- hotspot rank badge ---- */
 .hs-card{ position:relative; }
 .hs-rank{
-  position:absolute; top:10px; left:-7px; width:20px; height:20px;
+  position:absolute; top:50%; transform:translateY(-50%); left:-9px; width:20px; height:20px;
   border-radius:50%; background:#0A0F1A; border:1.5px solid;
   display:flex; align-items:center; justify-content:center;
   font-family:'Martian Mono',monospace; font-size:10px; font-weight:700;
@@ -966,3 +966,87 @@ body{font-family:var(--ui);background:var(--void);color:var(--text);
   .sos-text{ display:none; }                /* icon-only SOS in the compact dock */
   .donut{ width:92px; height:92px; }
 }
+
+/* ============================================================
+   SAFERAIPUR v3.1 — mobile overlap fix, news panel, voting, nudge
+   ============================================================ */
+
+/* 1+2) mobile: when the sheet is up, floating chrome gets OUT OF THE WAY.
+   The map-tabs were sitting above the open sheet (z 26 > 25), stealing
+   touches — that's why scrolling near the top of the sheet felt dead. */
+@media (max-width: 900px){
+  body.sheet-up .map-tabs,
+  body.sheet-up .legend,
+  body.sheet-up .sat-fab,
+  body.sheet-up .nudge-pop{ display:none !important; }
+  .side-scroll{ touch-action: pan-y; -webkit-overflow-scrolling: touch; }
+}
+
+/* 4) news panel */
+.pill-click{ cursor:pointer; transition:all .2s; }
+.pill-click:hover{ border-color:rgba(255,59,92,.4); }
+.news-panel{
+  position:fixed; top:86px; right:14px; width:min(400px, calc(100vw - 20px));
+  max-height:60vh; overflow-y:auto; z-index:1250; border-radius:16px;
+  padding:6px; animation:legendIn .25s cubic-bezier(.2,.9,.3,1.2);
+}
+.np-head{
+  display:flex; align-items:center; justify-content:space-between;
+  padding:10px 12px 8px; font-family:'Martian Mono',monospace; font-size:10px;
+  letter-spacing:.14em; text-transform:uppercase; color:var(--text-dim, #AEB9CC);
+}
+.np-close{ border:none; background:none; color:var(--text-faint); cursor:pointer; font-size:13px; }
+.np-row{
+  display:flex; align-items:center; gap:10px; padding:10px 12px;
+  border-radius:11px; cursor:pointer; transition:background .15s;
+}
+.np-row:hover{ background:rgba(255,255,255,.05); }
+.np-title{ font-size:12px; line-height:1.4; color:#E8EDF6;
+  display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
+.np-meta{ font-size:9.5px; color:var(--text-faint, #7E8AA0); margin-top:3px; }
+.np-link{
+  flex-shrink:0; width:28px; height:28px; border-radius:8px; display:flex;
+  align-items:center; justify-content:center; text-decoration:none;
+  color:#2DD4BF; background:rgba(45,212,191,.08); border:1px solid rgba(45,212,191,.25);
+}
+.np-empty{ padding:14px 12px 16px; font-size:11px; line-height:1.5; color:var(--text-faint); }
+@media (max-width:900px){ .news-panel{ top:130px; right:10px; left:10px; width:auto; } }
+
+/* 6) popup voting */
+.pv-vote{ margin-top:8px; padding-top:8px; border-top:1px solid rgba(255,255,255,.1); }
+.pv-counts{ font-size:9.5px; color:#7E8AA0; font-family:'Martian Mono',monospace; }
+.pv-vote-btns{ display:flex; gap:6px; margin-top:6px; }
+.pv-yes, .pv-no{
+  flex:1; padding:7px 8px; border-radius:8px; cursor:pointer; font-size:10.5px;
+  font-weight:600; transition:all .15s;
+}
+.pv-yes{ background:rgba(45,212,191,.12); border:1px solid rgba(45,212,191,.4); color:#2DD4BF; }
+.pv-yes:hover{ background:rgba(45,212,191,.22); }
+.pv-no{ background:rgba(255,59,92,.08); border:1px solid rgba(255,59,92,.3); color:#FF6178; }
+.pv-no:hover{ background:rgba(255,59,92,.18); }
+
+/* 8) route nudge */
+.nudge-pop{
+  position:fixed; right:14px; bottom:88px; z-index:1160; max-width:320px;
+  display:flex; align-items:center; gap:10px; padding:12px 13px;
+  border-radius:14px; font-size:11.5px; line-height:1.45; color:var(--text-dim, #AEB9CC);
+  animation:legendIn .3s cubic-bezier(.2,.9,.3,1.2);
+}
+.nudge-pop b{ color:#2DD4BF; }
+.nudge-go{
+  flex-shrink:0; padding:8px 13px; border-radius:9px; cursor:pointer;
+  background:rgba(45,212,191,.12); border:1px solid rgba(45,212,191,.45);
+  color:#2DD4BF; font-family:'Martian Mono',monospace; font-size:10px; font-weight:700;
+}
+.nudge-x{ border:none; background:none; color:var(--text-faint); cursor:pointer; flex-shrink:0; }
+@media (max-width:900px){ .nudge-pop{ right:10px; left:10px; bottom:160px; max-width:none; } }
+
+/* 9) surge strip inside the welcome card */
+.wc-surge{
+  display:flex; align-items:center; gap:10px; width:100%; text-align:left;
+  margin:0 0 16px; padding:11px 13px; border-radius:12px; cursor:pointer;
+  background:rgba(255,59,92,.12); border:1px solid rgba(255,59,92,.5);
+  color:#FFD5DD; font-size:11.5px; line-height:1.45;
+  animation:surgeIn .5s cubic-bezier(.2,.9,.3,1.2);
+}
+.wc-surge:hover{ background:rgba(255,59,92,.2); }

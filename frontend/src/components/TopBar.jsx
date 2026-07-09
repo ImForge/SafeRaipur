@@ -49,7 +49,20 @@ const COORDS = {
   'Saddu':           [21.1900, 81.6540],
 };
 
+function timeAgo(dt) {
+  const mins = Math.floor((Date.now() - new Date(dt)) / 60000);
+  if (mins < 60) return `${Math.max(1, mins)}m ago`;
+  const hrs = Math.floor(mins / 60);
+  if (hrs < 24) return `${hrs}h ago`;
+  return `${Math.floor(hrs / 24)}d ago`;
+}
+
 export default function TopBar({ incidents, hotspots, safetyScore, onSearch }) {
+  const [newsOpen, setNewsOpen] = useState(false);
+  const news = incidents
+    .filter(i => i.source === 'news' && i.title)
+    .sort((a, b) => new Date(b.occurred_at || b.dt) - new Date(a.occurred_at || a.dt))
+    .slice(0, 8);
   const [time, setTime] = useState('');
   const [date, setDate] = useState('');
   const [count, setCount] = useState(0);
@@ -60,7 +73,9 @@ export default function TopBar({ incidents, hotspots, safetyScore, onSearch }) {
   useEffect(() => {
     const tick = () => {
       const d = new Date();
-      setTime(`${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`);
+      const h12 = d.getHours() % 12 || 12;
+      const ampm = d.getHours() >= 12 ? 'PM' : 'AM';
+      setTime(`${h12}:${String(d.getMinutes()).padStart(2,'0')} ${ampm}`);
       setDate(d.toLocaleDateString('en-IN', { weekday:'short', day:'numeric', month:'short' }).toUpperCase());
     };
     tick(); const id = setInterval(tick, 20000); return () => clearInterval(id);
@@ -136,8 +151,8 @@ export default function TopBar({ incidents, hotspots, safetyScore, onSearch }) {
 
       <div className="spacer" />
 
-      {/* incidents pill */}
-      <div className="stat-pill">
+      {/* incidents pill — click for the latest news feed */}
+      <div className="stat-pill pill-click" onClick={() => setNewsOpen(o => !o)}>
         <div className="pi" style={{ background:'rgba(255,59,92,.14)' }}>
           <svg viewBox="0 0 24 24" width="15" fill="none" stroke="#FF6178" strokeWidth="2.2"
             strokeLinecap="round" strokeLinejoin="round">
@@ -176,6 +191,28 @@ export default function TopBar({ incidents, hotspots, safetyScore, onSearch }) {
           <div className="clock-date">{date}</div>
         </div>
       </div>
+
+      {newsOpen && (
+        <div className="news-panel glass" onClick={(e) => e.stopPropagation()}>
+          <div className="np-head">
+            <span>Latest Crime News</span>
+            <button className="np-close" onClick={() => setNewsOpen(false)}>✕</button>
+          </div>
+          {news.length === 0 && <div className="np-empty">No news incidents in the current view — the scraper adds them as Raipur news breaks.</div>}
+          {news.map((n, i) => (
+            <div key={i} className="np-row" onClick={() => { onSearch({ lat: n.lat, lng: n.lng }); setNewsOpen(false); }}>
+              <div className="np-info">
+                <div className="np-title">{n.title}</div>
+                <div className="np-meta">{n.area || 'Raipur'} · {timeAgo(n.occurred_at || n.dt)}</div>
+              </div>
+              {n.source_url && (
+                <a className="np-link" href={n.source_url} target="_blank" rel="noopener noreferrer"
+                  onClick={(e) => e.stopPropagation()}>↗</a>
+              )}
+            </div>
+          ))}
+        </div>
+      )}
     </header>
   );
 }

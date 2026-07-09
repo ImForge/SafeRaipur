@@ -17,7 +17,7 @@ export const weight = (inc) => inc.severity * decay(inc.datetime || inc.dt || in
 export const TYPE_LABEL = {
   sexual_assault: 'Assault', assault: 'Assault', harassment: 'Harassment',
   stalking: 'Stalking', chain_snatching: 'Snatching', theft: 'Theft',
-  suspicious: 'Suspicious',
+  suspicious: 'Suspicious', murder: 'Homicide', robbery: 'Robbery',
 };
 
 export const TYPE_SEV = {

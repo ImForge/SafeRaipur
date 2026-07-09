@@ -143,8 +143,16 @@ export default function MapView({
         .bindPopup(`<span class="pv-type">▲ ${TYPE_LABEL[i.type] || i.type}</span>
           <div class="pv-area">${i.area || (isLive ? 'Community report' : 'Unknown')}</div>
           ${i.title ? `<div class="pv-meta" style="max-width:230px">${i.title}</div>` : ''}
-          <div class="pv-meta">${when}<br>Source: ${i.source === 'news' ? 'News-verified' : i.is_verified ? 'Community · Verified' : 'Community'} · Sev ${sev}/10</div>
+          <div class="pv-meta">${when}<br>Source: ${i.source === 'news' ? 'News-verified' : i.is_verified ? 'Community · Verified ✓' : 'Community · Unverified'} · Sev ${sev}/10</div>
           ${i.source_url ? `<a class="pv-src" href="${i.source_url}" target="_blank" rel="noopener noreferrer">Read source article ↗</a>` : ''}
+          ${isLive && !i.is_verified ? `
+            <div class="pv-vote">
+              <span class="pv-counts">${i.confirms || 0} confirm${(i.confirms||0)===1?'':'s'}${i.flags ? ` · ${i.flags} flagged` : ''}</span>
+              <div class="pv-vote-btns">
+                <button class="pv-yes" onclick="window.__srVote(${i.id},'confirm')">✓ I can confirm</button>
+                <button class="pv-no" onclick="window.__srVote(${i.id},'fake')">Report fake</button>
+              </div>
+            </div>` : ''}
           <div class="pv-bar"><i style="width:${sev * 10}%;background:${col};box-shadow:0 0 8px ${col};"></i></div>`,
           { closeButton: false })
         .on('mouseover', function () { this.openPopup(); })

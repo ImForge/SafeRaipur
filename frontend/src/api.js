@@ -26,7 +26,7 @@ export const api = {
   async listReports() {
     const { data, error } = await supabase
       .from('user_reports')
-      .select('id,type,severity,time_of_day,area,occurred_at,lat,lng,is_verified')
+      .select('id,type,severity,time_of_day,area,occurred_at,lat,lng,is_verified,confirms,flags')
       .gte('occurred_at', DAYS_180)
       .order('occurred_at', { ascending: false })
       .limit(1000);
@@ -68,6 +68,16 @@ export const api = {
    * Severity is assigned server-side; the RPC also enforces the Raipur
    * bounding box and a 3-reports-per-hour-per-device limit.
    */
+  /** Anonymous vote on a community report: 'confirm' or 'fake'. One vote per device per report (DB-enforced). */
+  async voteReport(reportId, kind, anonymous_id) {
+    const { data, error } = await supabase.rpc('vote_report', {
+      p_report_id: reportId, p_kind: kind, p_anon_id: anonymous_id,
+    });
+    if (error) throw error;
+    if (!data?.ok) throw new Error(data?.error || 'Vote rejected');
+    return data;
+  },
+
   async submitReport({ type, lat, lng, time_of_day, anonymous_id }) {
     const { data, error } = await supabase.rpc('submit_report', {
       p_type: type, p_lat: lat, p_lng: lng,

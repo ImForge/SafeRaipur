@@ -58,6 +58,7 @@ export default function App() {
   const [showRight, setShowRight] = useState(true);
 
   const [toast, setToast] = useState(null);
+  const [nudge, setNudge] = useState(false);
   const toastTimer = useRef(null);
   const riskCellsRef = useRef([]);
   riskCellsRef.current = riskCells;
@@ -101,6 +102,27 @@ export default function App() {
   }, [showToast]);
 
   useRealtime({ onNewReport, onNewAlert });
+
+  // gentle feature nudge ~20s in: remind people the safe-route exists
+  useEffect(() => {
+    const id = setTimeout(() => setNudge(true), 20000);
+    return () => clearTimeout(id);
+  }, []);
+
+  // Leaflet popups are raw HTML (outside React), so their Confirm/Fake
+  // buttons call this global hook. Set once; cleans up on unmount.
+  useEffect(() => {
+    window.__srVote = async (id, kind) => {
+      try {
+        await api.voteReport(id, kind, getAnonymousId());
+        showToast(kind === 'confirm'
+          ? 'Thanks — confirmation logged. 3 confirms auto-verifies a report.'
+          : 'Flag logged. Repeated flags hide a report pending review.');
+        refresh();
+      } catch (e) { showToast(e.message || 'Vote failed'); }
+    };
+    return () => { delete window.__srVote; };
+  }, [showToast, refresh]);
 
   /* ---------------- map click: report arming OR route picking ------------ */
   const handleMapClick = useCallback((latlng) => {
@@ -229,7 +251,7 @@ export default function App() {
   // 4) apply the category chips on top
   const visibleIncidents = activeCat === 'all' ? rangedEvents
     : rangedEvents.filter(i => activeCat === 'sexual_assault'
-        ? (i.type === 'sexual_assault' || i.type === 'assault' || i.type === 'murder')
+        ? (i.type === 'sexual_assault' || i.type === 'assault')
         : i.type === activeCat);
 
   const hotspots = computeHotspots(visibleIncidents);
@@ -267,7 +289,15 @@ export default function App() {
       />
 
       <Legend />
-      <Welcome />
+      <Welcome alerts={alerts} onViewAlert={(al) => setFocusedLatLng({ lat: al.lat, lng: al.lng })} />
+
+      {nudge && routeMode === 'idle' && !arming && (
+        <div className="nudge-pop glass">
+          <span>Going somewhere? Plot the <b>safest route</b> against live risk data.</span>
+          <button className="nudge-go" onClick={() => { setNudge(false); startRoutePlanning(); }}>Try it</button>
+          <button className="nudge-x" onClick={() => setNudge(false)}>✕</button>
+        </div>
+      )}
 
       {/* satellite toggle — React-rendered, always visible above zoom controls */}
       <button
