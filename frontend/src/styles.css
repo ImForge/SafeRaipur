@@ -688,3 +688,81 @@ body{font-family:var(--ui);background:var(--void);color:var(--text);
   box-shadow:0 0 12px rgba(45,212,191,.45);
 }
 @media (max-width:760px){ .sat-fab{ bottom:200px; } }
+
+/* ============================================================
+   SAFERAIPUR v2.4 — legend + onboarding (public-launch polish)
+   ============================================================ */
+
+/* legend — bottom-left, collapsed chip by default */
+.legend{ position:fixed; left:14px; bottom:88px; z-index:1140; }
+.legend-chip{
+  padding:8px 13px; border-radius:999px; cursor:pointer;
+  background:rgba(10,15,26,.92); border:1px solid rgba(255,255,255,.18);
+  color:#AEB9CC; font-family:'Martian Mono',monospace; font-size:10px;
+  letter-spacing:.08em; transition:all .2s;
+}
+.legend-chip:hover{ border-color:rgba(45,212,191,.5); color:#2DD4BF; }
+.legend-body{
+  position:absolute; left:0; bottom:44px; width:265px;
+  border-radius:14px; padding:13px 14px; display:flex;
+  flex-direction:column; gap:10px;
+  animation:legendIn .25s cubic-bezier(.2,.9,.3,1.2);
+}
+@keyframes legendIn{ from{ opacity:0; transform:translateY(8px);} }
+.lg-row{ display:flex; align-items:center; gap:10px; font-size:10.5px;
+  line-height:1.4; color:var(--text-dim, #AEB9CC); }
+.lg-row > span:first-child{ flex-shrink:0; }
+.lg-heat{ width:26px; height:9px; border-radius:5px;
+  background:linear-gradient(90deg, rgba(45,212,191,.5), #FFA63D, #FF3B5C); }
+.lg-dot{ width:9px; height:9px; border-radius:50%; margin:0 8px;
+  box-shadow:0 0 7px currentColor; }
+.lg-beacon{ width:11px; height:11px; border-radius:50%; margin:0 7px;
+  border:2px solid #FFA63D; box-shadow:0 0 8px rgba(255,166,61,.6); }
+.lg-station{ width:9px; height:9px; margin:0 8px; background:#4DA3FF;
+  transform:rotate(45deg); box-shadow:0 0 7px rgba(77,163,255,.7); }
+.lg-surge{ width:11px; height:11px; border-radius:50%; margin:0 7px;
+  border:2px solid #FF3B5C; animation:sbPulse 1.4s infinite; }
+.lg-you{ width:9px; height:9px; border-radius:50%; margin:0 8px;
+  background:#4DA3FF; border:2px solid #fff; }
+
+/* welcome overlay */
+.welcome-overlay{
+  position:fixed; inset:0; z-index:2000; display:flex;
+  align-items:center; justify-content:center; padding:20px;
+  background:rgba(4,7,13,.75); backdrop-filter:blur(6px);
+  animation:wcFade .35s ease;
+}
+@keyframes wcFade{ from{ opacity:0; } }
+.welcome-card{
+  width:100%; max-width:420px; border-radius:20px; padding:28px 26px 22px;
+  text-align:center; animation:wcPop .45s cubic-bezier(.2,.9,.3,1.2);
+}
+@keyframes wcPop{ from{ opacity:0; transform:scale(.92) translateY(14px);} }
+.wc-logo{ font-size:34px; margin-bottom:6px; }
+.welcome-card h2{
+  margin:0; font-family:'Martian Mono',monospace; font-size:22px;
+  letter-spacing:.14em; color:#E8EDF6;
+}
+.wc-sub{ margin:4px 0 18px; font-size:11px; letter-spacing:.2em;
+  text-transform:uppercase; color:var(--text-faint, #7E8AA0); }
+.wc-points{ display:flex; flex-direction:column; gap:13px; text-align:left; }
+.wc-point{ display:flex; gap:11px; align-items:flex-start;
+  font-size:12.5px; line-height:1.55; color:var(--text-dim, #AEB9CC); }
+.wc-point b{ color:#E8EDF6; }
+.wc-ico{ font-size:14px; margin-top:1px; flex-shrink:0; }
+.wc-btn{
+  margin-top:20px; width:100%; padding:13px; border-radius:12px; cursor:pointer;
+  background:linear-gradient(135deg, #FF3B5C, #FF6178); border:none;
+  color:#fff; font-family:'Martian Mono',monospace; font-size:12px;
+  font-weight:700; letter-spacing:.08em; transition:all .2s;
+  box-shadow:0 4px 22px rgba(255,59,92,.35);
+}
+.wc-btn:hover{ transform:translateY(-1px); box-shadow:0 6px 26px rgba(255,59,92,.5); }
+.wc-fine{ margin:12px 0 0; font-size:9.5px; letter-spacing:.06em;
+  color:var(--text-faint, #66738A); }
+
+/* mobile positions: dock is at TOP on phones; keep legend clear of the sheet */
+@media (max-width: 900px){
+  .legend{ left:10px; bottom:150px; }
+  .sat-fab{ bottom:150px; right:10px; }
+}

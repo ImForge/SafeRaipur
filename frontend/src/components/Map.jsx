@@ -94,15 +94,22 @@ export default function MapView({
     const map = mapRef.current;
     if (!map) return;
     clear('heat');
+    // Only render cells that carry real signal. Weak cells (score < .12)
+    // previously painted the whole city — the "everything glows" soup.
+    // Dark map = calm; color = actual concentration. Signal over noise.
     const pts = (riskCells && riskCells.length > 0)
-      ? riskCells.map(c => [c.lat, c.lng, c.score])                 // precomputed KDE
+      ? riskCells.filter(c => c.score >= 0.12).map(c => [c.lat, c.lng, c.score])
       : incidents.map(i => [i.lat, i.lng, weight(i) / 10]);         // fallback pre-ingest
     // smaller radius/blur on phones = far fewer pixels to composite per frame
     const mobile = window.matchMedia('(pointer: coarse)').matches;
     layers.current.heat = L.heatLayer(pts, {
-      radius: mobile ? 26 : 38, blur: mobile ? 18 : 30,
-      minOpacity: .35, maxZoom: 17, max: 1,
-      gradient: { 0: 'rgba(45,212,191,0)', .25: 'rgba(45,212,191,.55)', .45: 'rgba(255,166,61,.7)', .65: 'rgba(255,59,92,.82)', .85: 'rgba(255,59,92,.95)', 1: 'rgba(255,90,120,1)' },
+      radius: mobile ? 22 : 32, blur: mobile ? 15 : 22,
+      minOpacity: 0, maxZoom: 17, max: 1,
+      gradient: {
+        0: 'rgba(45,212,191,0)', .3: 'rgba(45,212,191,.35)',
+        .5: 'rgba(255,166,61,.55)', .7: 'rgba(255,59,92,.75)',
+        .88: 'rgba(255,59,92,.9)', 1: 'rgba(255,90,120,1)',
+      },
     }).addTo(map);
   }, [riskCells, incidents]);
 

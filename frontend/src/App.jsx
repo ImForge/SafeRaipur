@@ -12,6 +12,8 @@ import RightSidebar from './components/RightSidebar.jsx';
 import MapView from './components/Map.jsx';
 import Dock from './components/Dock.jsx';
 import ReportModal from './components/ReportModal.jsx';
+import Legend from './components/Legend.jsx';
+import Welcome from './components/Welcome.jsx';
 
 /**
  * SafeRaipur v2 — app shell.
@@ -249,6 +251,9 @@ export default function App() {
         userCoords={geo.coords}
         baseLayer={baseLayer}
       />
+
+      <Legend />
+      <Welcome />
 
       {/* satellite toggle — React-rendered, always visible above zoom controls */}
       <button
