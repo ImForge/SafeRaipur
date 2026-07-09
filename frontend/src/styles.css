@@ -800,3 +800,10 @@ body{font-family:var(--ui);background:var(--void);color:var(--text);
   .legend-body{ animation:none; }
   * { text-shadow:none !important; }
 }
+
+/* while the mobile sheet is open, hide floating chips so nothing overlays
+   the panel content (they reappear the moment the sheet slides down) */
+@media (max-width: 900px){
+  body.sheet-up .legend,
+  body.sheet-up .sat-fab{ display:none; }
+}

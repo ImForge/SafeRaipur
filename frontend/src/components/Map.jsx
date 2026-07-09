@@ -119,17 +119,7 @@ export default function MapView({
   useEffect(() => {
     const map = mapRef.current;
     if (!map) return;
-    ['dots', 'corridors', 'beacons'].forEach(clear);
-
-    layers.current.corridors = L.layerGroup().addTo(map);
-    hotspots.slice(0, 4).forEach((a, k) => {
-      const b = hotspots[k + 1];
-      if (!b) return;
-      const risk = (a.score + b.score) / 2;
-      const col = risk > 55 ? '#FF3B5C' : risk > 30 ? '#FFA63D' : '#2DD4BF';
-      L.polyline([[a.lat, a.lng], [b.lat, b.lng]], { color: col, weight: 2.5, opacity: .65, className: 'corridor' })
-        .addTo(layers.current.corridors);
-    });
+    ['dots', 'beacons'].forEach(clear);
 
     layers.current.dots = L.layerGroup().addTo(map);
     incidents.forEach(i => {

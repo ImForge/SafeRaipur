@@ -106,6 +106,23 @@ function Forecast() {
 
 export default function LeftSidebar({ timeOfDay, incidents, hotspots, safetyScore, routeShown, routeMode, routePts, routePlan, onToggleRoute, geoStatus, onRequestLocation, nearestStations, onRouteToStation }) {
   const [sheetOpen, setSheetOpen] = useState(false);
+  const touchY = useRef(null);
+
+  // let global CSS know the sheet is up (hides Legend/SAT chips underneath)
+  useEffect(() => {
+    document.body.classList.toggle('sheet-up', sheetOpen);
+    return () => document.body.classList.remove('sheet-up');
+  }, [sheetOpen]);
+
+  // swipe gesture on the handle/tabs: swipe down closes, swipe up opens
+  const onTouchStart = (e) => { touchY.current = e.touches[0].clientY; };
+  const onTouchEnd = (e) => {
+    if (touchY.current == null) return;
+    const dy = e.changedTouches[0].clientY - touchY.current;
+    touchY.current = null;
+    if (dy > 40) setSheetOpen(false);      // swiped down → show the map
+    else if (dy < -40) setSheetOpen(true); // swiped up → open the panel
+  };
   const [mobileTab, setMobileTab] = useState('overview');
 
   const col = scoreColor(safetyScore);
@@ -149,11 +166,12 @@ export default function LeftSidebar({ timeOfDay, incidents, hotspots, safetyScor
 
   return (
     <aside className={`side side-left glass ${sheetOpen ? 'sheet-open' : ''}`}>
-      <div className="sheet-handle" onClick={() => setSheetOpen(o => !o)}>
+      <div className="sheet-handle" onClick={() => setSheetOpen(o => !o)}
+        onTouchStart={onTouchStart} onTouchEnd={onTouchEnd}>
         <div className="sheet-grip" />
         <div className="sheet-peek">Overview · Hotspots</div>
       </div>
-      <div className="mobile-tabs">
+      <div className="mobile-tabs" onTouchStart={onTouchStart} onTouchEnd={onTouchEnd}>
         {['overview','hotspots'].map(t => (
           <button key={t} className={`mtab ${mobileTab === t ? 'on' : ''}`}
             onClick={() => { setMobileTab(t); setSheetOpen(true); }}>
