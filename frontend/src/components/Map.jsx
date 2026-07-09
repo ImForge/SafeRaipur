@@ -14,7 +14,7 @@ const CENTER = [21.2200, 81.6500];
 export default function MapView({
   incidents, hotspots, riskCells, alerts, stations,
   arming, routeMode, routePts, routePlan,
-  onMapClick, focusedLatLng, userCoords,
+  onMapClick, focusedLatLng, userCoords, baseLayer,
 }) {
   const containerRef = useRef(null);
   const mapRef = useRef(null);
@@ -30,7 +30,9 @@ export default function MapView({
     const map = L.map(containerRef.current, { center: CENTER, zoom: 12, zoomControl: false });
     L.control.zoom({ position: 'bottomright' }).addTo(map);
 
-    // two base styles: dark ops (default) and satellite (Esri World Imagery)
+    // two base styles, swapped by the baseLayer PROP (React button in App —
+    // a plain Leaflet control proved unreliable, so the toggle now lives in
+    // React where we can see and style it like every other working button)
     const dark = L.layerGroup([
       L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}{r}.png',
         { subdomains: 'abcd', maxZoom: 19, attribution: '© OSM · CARTO' }),
@@ -43,30 +45,27 @@ export default function MapView({
       L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_only_labels/{z}/{x}/{y}{r}.png',
         { subdomains: 'abcd', maxZoom: 19, opacity: .8 }),
     ]);
-
-    // toggle button (Leaflet custom control, bottom-right above zoom)
-    const Toggle = L.Control.extend({
-      options: { position: 'bottomright' },
-      onAdd() {
-        const btn = L.DomUtil.create('button', 'sat-toggle');
-        btn.innerHTML = '🛰';
-        btn.title = 'Toggle satellite view';
-        let isSat = false;
-        L.DomEvent.on(btn, 'click', (e) => {
-          L.DomEvent.stopPropagation(e);
-          isSat = !isSat;
-          if (isSat) { map.removeLayer(dark); sat.addTo(map); btn.classList.add('on'); }
-          else { map.removeLayer(sat); dark.addTo(map); btn.classList.remove('on'); }
-        });
-        return btn;
-      },
-    });
-    map.addControl(new Toggle());
+    layers.current.baseDark = dark;
+    layers.current.baseSat = sat;
 
     mapRef.current = map;
     setTimeout(() => map.invalidateSize(), 200);
     return () => { map.remove(); mapRef.current = null; };
   }, []);
+
+  /* ------- base layer swap (dark <-> satellite) ------- */
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!map || !layers.current.baseDark) return;
+    const { baseDark, baseSat } = layers.current;
+    if (baseLayer === 'sat') {
+      map.removeLayer(baseDark);
+      baseSat.addTo(map);
+    } else {
+      map.removeLayer(baseSat);
+      baseDark.addTo(map);
+    }
+  }, [baseLayer]);
 
   /* ------- click handler (report arming / route picking) ------- */
   useEffect(() => {

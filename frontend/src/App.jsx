@@ -45,6 +45,9 @@ export default function App() {
   // user location — opt-in, stays on device (see useGeolocation notes)
   const geo = useGeolocation();
 
+  // map base style: 'dark' (ops view) | 'sat' (satellite imagery)
+  const [baseLayer, setBaseLayer] = useState('dark');
+
   const [toast, setToast] = useState(null);
   const toastTimer = useRef(null);
   const riskCellsRef = useRef([]);
@@ -244,7 +247,17 @@ export default function App() {
         onMapClick={handleMapClick}
         focusedLatLng={focusedLatLng}
         userCoords={geo.coords}
+        baseLayer={baseLayer}
       />
+
+      {/* satellite toggle — React-rendered, always visible above zoom controls */}
+      <button
+        className={`sat-fab ${baseLayer === 'sat' ? 'on' : ''}`}
+        onClick={() => setBaseLayer(b => (b === 'sat' ? 'dark' : 'sat'))}
+        title="Toggle satellite view"
+      >
+        {baseLayer === 'sat' ? 'MAP' : 'SAT'}
+      </button>
 
       {/* surge banner — most important thing on screen when active */}
       {alerts.length > 0 && (
