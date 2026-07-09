@@ -14,7 +14,7 @@ const CENTER = [21.2200, 81.6500];
 export default function MapView({
   incidents, hotspots, riskCells, alerts, stations,
   arming, routeMode, routePts, routePlan,
-  onMapClick, focusedLatLng, userCoords, baseLayer,
+  onMapClick, focusedLatLng, userCoords, baseLayer, mapView,
 }) {
   const containerRef = useRef(null);
   const mapRef = useRef(null);
@@ -117,16 +117,18 @@ export default function MapView({
         .85: 'rgba(255,59,92,.92)', 1: 'rgba(255,90,120,1)',
       },
     }).addTo(map);
-  }, [riskCells, incidents]);
+  }, [riskCells, incidents, mapView]);
 
   /* ------- incident dots + corridors + beacons ------- */
   useEffect(() => {
     const map = mapRef.current;
     if (!map) return;
     ['dots', 'beacons'].forEach(clear);
+    const showDots = mapView === 'live';
+    const showBeacons = mapView !== 'heat';
 
     layers.current.dots = L.layerGroup().addTo(map);
-    incidents.forEach(i => {
+    if (showDots) incidents.forEach(i => {
       const sev = i.severity || 1;
       const isLive = i.source === 'crowd';
       const col = sev >= 8 ? '#FF3B5C' : sev >= 5 ? '#FF6178' : sev >= 3 ? '#FFA63D' : '#7E8AA0';
@@ -150,7 +152,7 @@ export default function MapView({
     });
 
     layers.current.beacons = L.layerGroup().addTo(map);
-    hotspots.slice(0, 5).forEach(h => {
+    if (showBeacons) hotspots.slice(0, 5).forEach(h => {
       const col = h.score >= 60 ? '#FF3B5C' : h.score >= 30 ? '#FFA63D' : '#2DD4BF';
       L.marker([h.lat, h.lng], {
         icon: L.divIcon({
@@ -163,9 +165,10 @@ export default function MapView({
           <div class="pv-meta">${h.n} incidents · score ${h.score}/100</div>
           <div class="pv-bar"><i style="width:${h.score}%;background:${col};box-shadow:0 0 8px ${col};"></i></div>`,
           { closeButton: false })
+        .bindTooltip(h.area, { permanent: true, direction: 'right', offset: [14, 0], className: 'hs-label' })
         .addTo(layers.current.beacons);
     });
-  }, [incidents, hotspots]);
+  }, [incidents, hotspots, mapView]);
 
   /* ------- SURGE rings — the live "something is happening HERE" layer ------- */
   useEffect(() => {

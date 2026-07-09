@@ -49,6 +49,13 @@ export default function App() {
 
   // map base style: 'dark' (ops view) | 'sat' (satellite imagery)
   const [baseLayer, setBaseLayer] = useState('dark');
+  // map content mode: live (everything) | heat (heat only) | clusters (hotspots only)
+  const [mapView, setMapView] = useState('live');
+  // time window over the data: 7d | 30d | all
+  const [timeRange, setTimeRange] = useState('all');
+  // desktop panel visibility (nav rail controls these; mobile ignores them)
+  const [showLeft, setShowLeft] = useState(true);
+  const [showRight, setShowRight] = useState(true);
 
   const [toast, setToast] = useState(null);
   const toastTimer = useRef(null);
@@ -213,9 +220,15 @@ export default function App() {
     return timeOfDay === 'night' ? night : !night;
   });
 
-  // 3) apply the category chips on top of the time filter
-  const visibleIncidents = activeCat === 'all' ? timeFilteredEvents
-    : timeFilteredEvents.filter(i => activeCat === 'sexual_assault'
+  // 3) time-range window (7D / 30D / ALL from the dock)
+  const rangeMs = timeRange === '7d' ? 7 * 864e5 : timeRange === '30d' ? 30 * 864e5 : null;
+  const rangedEvents = rangeMs
+    ? timeFilteredEvents.filter(i => Date.now() - new Date(i.dt || i.occurred_at) <= rangeMs)
+    : timeFilteredEvents;
+
+  // 4) apply the category chips on top
+  const visibleIncidents = activeCat === 'all' ? rangedEvents
+    : rangedEvents.filter(i => activeCat === 'sexual_assault'
         ? (i.type === 'sexual_assault' || i.type === 'assault' || i.type === 'murder')
         : i.type === activeCat);
 
@@ -250,6 +263,7 @@ export default function App() {
         focusedLatLng={focusedLatLng}
         userCoords={geo.coords}
         baseLayer={baseLayer}
+        mapView={mapView}
       />
 
       <Legend />
@@ -276,6 +290,46 @@ export default function App() {
         </div>
       )}
 
+      {/* desktop nav rail — mockup's left icon column, mapped to real actions */}
+      <nav className="rail glass">
+        <button className={`rail-btn ${showLeft && showRight ? 'on' : ''}`} title="Overview"
+          onClick={() => { setShowLeft(true); setShowRight(true); }}>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
+          <span>Overview</span>
+        </button>
+        <button className={`rail-btn ${!showLeft && !showRight ? 'on' : ''}`} title="Map only"
+          onClick={() => { setShowLeft(false); setShowRight(false); }}>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M9 20l-6-3V4l6 3 6-3 6 3v13l-6-3-6 3z"/><path d="M9 7v13M15 4v13"/></svg>
+          <span>Live Map</span>
+        </button>
+        <button className={`rail-btn ${showRight && !showLeft ? 'on' : ''}`} title="Hotspots"
+          onClick={() => { setShowLeft(false); setShowRight(true); }}>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="3"/><circle cx="12" cy="12" r="8"/></svg>
+          <span>Hotspots</span>
+        </button>
+        <button className={`rail-btn ${arming ? 'on' : ''}`} title="Report"
+          onClick={() => setArming(a => !a)}>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 2L2 22h20L12 2z"/><path d="M12 9v5M12 18h.01"/></svg>
+          <span>Report</span>
+        </button>
+        <a className="rail-btn rail-sos" href="tel:112" title="Emergency 112">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6 19.8 19.8 0 0 1-3.1-8.7A2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.3 1.8.6 2.6a2 2 0 0 1-.5 2.1L8.1 9.6a16 16 0 0 0 6 6l1.2-1.2a2 2 0 0 1 2.1-.5c.8.3 1.7.5 2.6.6a2 2 0 0 1 1.7 2z"/></svg>
+          <span>SOS</span>
+        </a>
+      </nav>
+
+      {/* map view tabs — Live Map | Heatmap | Clusters, with risk legend */}
+      <div className="map-tabs glass">
+        {[['live','Live Map'],['heat','Heatmap'],['clusters','Clusters']].map(([k, label]) => (
+          <button key={k} className={`mt-btn ${mapView===k?'on':''}`} onClick={() => setMapView(k)}>{label}</button>
+        ))}
+        <div className="mt-legend">
+          <span><i style={{ background:'#FF3B5C' }} />Critical</span>
+          <span><i style={{ background:'#FFA63D' }} />High</span>
+          <span><i style={{ background:'#2DD4BF' }} />Moderate</span>
+        </div>
+      </div>
+
       <TopBar
         timeOfDay={timeOfDay}
         incidents={visibleIncidents}
@@ -283,7 +337,7 @@ export default function App() {
         safetyScore={safetyScore}
         onSearch={(latlng) => setFocusedLatLng(latlng)}
       />
-      <LeftSidebar
+      {showLeft && <LeftSidebar
         timeOfDay={timeOfDay}
         incidents={visibleIncidents}
         hotspots={hotspots}
@@ -297,15 +351,17 @@ export default function App() {
         onRequestLocation={geo.request}
         nearestStations={nearestStations}
         onRouteToStation={routeToStation}
-      />
-      <RightSidebar
+      />}
+      {showRight && <RightSidebar
         hotspots={hotspots}
+        incidents={visibleIncidents}
         onHotspotClick={(h) => setFocusedLatLng({ lat: h.lat, lng: h.lng })}
-      />
+      />}
       <Dock
         timeOfDay={timeOfDay} setTimeOfDay={setTimeOfDay}
         activeCat={activeCat} setActiveCat={setActiveCat}
         arming={arming} setArming={(v) => { setArming(v); if (v) { setRouteMode('idle'); setRoutePlan(null); } }}
+        timeRange={timeRange} setTimeRange={setTimeRange}
       />
 
       <div className={`arm-banner ${arming || routeBanner ? 'show' : ''}`}>

@@ -808,3 +808,161 @@ body{font-family:var(--ui);background:var(--void);color:var(--text);
   body.sheet-up .legend,
   body.sheet-up .sat-fab{ display:none; }
 }
+
+/* ============================================================
+   SAFERAIPUR v3.0 — command-deck redesign
+   ============================================================ */
+
+/* ---- desktop nav rail (mockup's left icon column) ---- */
+.rail{
+  position:fixed; left:14px; top:90px; bottom:84px; width:64px; z-index:26;
+  border-radius:16px; display:flex; flex-direction:column; align-items:center;
+  gap:6px; padding:12px 0;
+}
+.rail-btn{
+  width:52px; padding:9px 0 7px; border-radius:11px; border:1px solid transparent;
+  background:none; cursor:pointer; display:flex; flex-direction:column;
+  align-items:center; gap:4px; color:var(--text-faint, #66738A);
+  text-decoration:none; transition:all .2s;
+}
+.rail-btn svg{ width:18px; height:18px; }
+.rail-btn span{ font-family:'Martian Mono',monospace; font-size:7.5px;
+  letter-spacing:.06em; text-transform:uppercase; }
+.rail-btn:hover{ color:var(--text-dim, #AEB9CC); background:rgba(255,255,255,.04); }
+.rail-btn.on{
+  color:var(--crimson-soft, #FF6178); background:rgba(255,59,92,.1);
+  border-color:rgba(255,59,92,.3);
+}
+.rail-sos{ margin-top:auto; color:#FF3B5C !important;
+  background:rgba(255,59,92,.08); border-color:rgba(255,59,92,.25) !important; }
+.rail-sos:hover{ background:rgba(255,59,92,.18); }
+
+/* shift panels to clear the rail on desktop */
+@media (min-width: 901px){
+  .side-left{ left:88px; }
+  .legend{ left:88px; }
+}
+
+/* ---- map view tabs ---- */
+.map-tabs{
+  position:fixed; top:86px; left:50%; transform:translateX(-50%); z-index:26;
+  display:flex; align-items:center; gap:4px; padding:5px;
+  border-radius:12px;
+}
+.mt-btn{
+  padding:7px 14px; border-radius:8px; border:none; background:none;
+  cursor:pointer; color:var(--text-faint, #7E8AA0);
+  font-family:'Martian Mono',monospace; font-size:10px; letter-spacing:.06em;
+  transition:all .2s;
+}
+.mt-btn.on{ color:#FF6178; background:rgba(255,59,92,.12);
+  box-shadow:inset 0 0 0 1px rgba(255,59,92,.3); }
+.mt-legend{ display:flex; gap:10px; margin:0 8px 0 10px;
+  padding-left:12px; border-left:1px solid var(--stroke, rgba(255,255,255,.08)); }
+.mt-legend span{ display:flex; align-items:center; gap:5px;
+  font-size:9px; color:var(--text-faint, #7E8AA0);
+  font-family:'Martian Mono',monospace; letter-spacing:.04em; }
+.mt-legend i{ width:7px; height:7px; border-radius:50%; }
+
+/* ---- donut chart ---- */
+.donut-wrap{ display:flex; align-items:center; gap:14px; }
+.donut{ width:104px; height:104px; flex-shrink:0; }
+.donut-num{ fill:#E8EDF6; font-family:'Martian Mono',monospace;
+  font-size:19px; font-weight:700; }
+.donut-sub{ fill:#66738A; font-size:7.5px; letter-spacing:.1em;
+  text-transform:uppercase; font-family:'Martian Mono',monospace; }
+.donut-legend{ flex:1; display:flex; flex-direction:column; gap:6px; min-width:0; }
+.dl-row{ display:flex; align-items:center; gap:8px; font-size:10.5px; }
+.dl-dot{ width:8px; height:8px; border-radius:3px; flex-shrink:0; }
+.dl-name{ color:var(--text-dim, #AEB9CC); text-transform:capitalize;
+  flex:1; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.dl-pct{ color:#E8EDF6; font-family:'Martian Mono',monospace; font-size:10px; }
+
+/* ---- gauge live chip ---- */
+.updated-chip{
+  display:inline-flex; align-items:center; gap:6px; margin-top:8px;
+  padding:4px 10px; border-radius:999px; font-size:9px;
+  font-family:'Martian Mono',monospace; letter-spacing:.06em;
+  color:#2DD4BF; background:rgba(45,212,191,.08);
+  border:1px solid rgba(45,212,191,.22);
+}
+.uc-dot{ width:6px; height:6px; border-radius:50%; background:#2DD4BF;
+  box-shadow:0 0 6px #2DD4BF; }
+
+/* ---- hotspot rank badge ---- */
+.hs-card{ position:relative; }
+.hs-rank{
+  position:absolute; top:10px; left:-7px; width:20px; height:20px;
+  border-radius:50%; background:#0A0F1A; border:1.5px solid;
+  display:flex; align-items:center; justify-content:center;
+  font-family:'Martian Mono',monospace; font-size:10px; font-weight:700;
+}
+
+/* ---- recent incidents feed ---- */
+.ri-list{ display:flex; flex-direction:column; gap:7px; }
+.ri-row{
+  display:flex; align-items:center; gap:10px; padding:9px 10px;
+  border-radius:10px; cursor:pointer;
+  background:rgba(255,255,255,.03); border:1px solid rgba(255,255,255,.06);
+  transition:all .2s;
+}
+.ri-row:hover{ background:rgba(255,255,255,.06); }
+.ri-dot{ width:8px; height:8px; border-radius:50%; flex-shrink:0; }
+.ri-info{ flex:1; min-width:0; }
+.ri-type{ font-size:11.5px; font-weight:600; color:#E8EDF6; }
+.ri-meta{ font-size:9.5px; color:var(--text-faint, #7E8AA0); margin-top:1px;
+  overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.ri-chip{ font-family:'Martian Mono',monospace; font-size:8.5px;
+  letter-spacing:.05em; padding:3px 8px; border-radius:999px;
+  border:1px solid; flex-shrink:0; }
+.ri-empty{ font-size:11px; color:var(--text-faint); padding:8px 4px; }
+
+/* ---- time view segmented ---- */
+.timeview{ display:flex; background:rgba(0,0,0,.35); border-radius:11px;
+  padding:4px; gap:3px; }
+.tv-btn{
+  border:none; background:none; cursor:pointer; padding:8px 12px;
+  border-radius:8px; font-family:'Martian Mono',monospace; font-size:10px;
+  font-weight:600; letter-spacing:.05em; color:var(--text-faint, #7E8AA0);
+  transition:.25s;
+}
+.tv-btn.on{ background:rgba(255,166,61,.16); color:#FFC074;
+  box-shadow:inset 0 0 0 1px rgba(255,166,61,.35); }
+
+/* ---- SOS button ---- */
+.sos-btn{
+  display:flex; align-items:center; gap:7px; padding:10px 15px;
+  border-radius:12px; text-decoration:none; margin-left:2px;
+  background:rgba(255,59,92,.08); border:1px solid rgba(255,59,92,.4);
+  color:#FF6178; transition:all .2s; flex-shrink:0;
+}
+.sos-btn svg{ width:15px; height:15px; }
+.sos-text{ font-family:'Martian Mono',monospace; font-size:11px;
+  font-weight:700; letter-spacing:.08em; }
+.sos-btn:hover{ background:rgba(255,59,92,.18);
+  box-shadow:0 0 16px rgba(255,59,92,.3); }
+
+/* ---- labeled hotspot beacons on the map ---- */
+.hs-label{
+  background:rgba(10,15,26,.85) !important; border:1px solid rgba(255,255,255,.15) !important;
+  border-radius:7px !important; color:#E8EDF6 !important;
+  font-family:'Instrument Sans','Segoe UI',sans-serif !important;
+  font-size:10.5px !important; font-weight:600 !important;
+  padding:3px 8px !important; box-shadow:none !important;
+}
+.hs-label::before{ display:none !important; }
+
+/* ---- mobile adaptations ---- */
+@media (max-width: 900px){
+  .rail{ display:none; }                    /* rail is desktop-only */
+  .map-tabs{
+    top:130px; left:10px; right:auto; transform:none;
+    padding:4px; border-radius:10px;
+  }
+  .mt-btn{ padding:6px 10px; font-size:9px; }
+  .mt-legend{ display:none; }               /* legend chip covers this on mobile */
+  .hs-label{ font-size:9px !important; padding:2px 6px !important; }
+  .sos-btn{ padding:9px 11px; }
+  .sos-text{ display:none; }                /* icon-only SOS in the compact dock */
+  .donut{ width:92px; height:92px; }
+}

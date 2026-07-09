@@ -3,6 +3,9 @@ import { scoreColor, TYPE_LABEL, isNight } from '../utils/risk.js';
 import { fmtDistance, estimateDriveMinutes, gmapsUrl } from '../utils/geo.js';
 import { HELPLINES, activeProtocols } from '../utils/safety.js';
 
+// shared palette — used by both the sidebar legend and the Donut component
+const DIST_COLORS = { Assault:'#FF3B5C', Harassment:'#FFA63D', Stalking:'#FF6178', Snatching:'#FFC074', Theft:'#2DD4BF' };
+
 /* ── animated counter hook ── */
 function useCounter(target, duration = 1100) {
   const [val, setVal] = useState(0);
@@ -146,7 +149,6 @@ export default function LeftSidebar({ timeOfDay, incidents, hotspots, safetyScor
   const cats = { Assault:0, Harassment:0, Stalking:0, Snatching:0, Theft:0 };
   incidents.forEach(i => { const l = TYPE_LABEL[i.type]; if (cats[l] != null) cats[l]++; });
   const total = Object.values(cats).reduce((a,b)=>a+b,0) || 1;
-  const DIST_COLORS = { Assault:'#FF3B5C', Harassment:'#FFA63D', Stalking:'#FF6178', Snatching:'#FFC074', Theft:'#2DD4BF' };
 
   // AI insights
   const top = hotspots[0];
@@ -187,7 +189,7 @@ export default function LeftSidebar({ timeOfDay, incidents, hotspots, safetyScor
           {/* Safety Score */}
           <div className="block">
             <div className="block-head">
-              <div className="panel-label"><span className="tick" />City Safety Index</div>
+              <div className="panel-label"><span className="tick" />City Safety Overview</div>
               <div className="panel-label">{timeOfDay.toUpperCase()}</div>
             </div>
             <div className="score-card">
@@ -196,6 +198,7 @@ export default function LeftSidebar({ timeOfDay, incidents, hotspots, safetyScor
                 <div className="score-meta">
                   <div className="score-status" style={{ color: col }}>{statusLabel}</div>
                   <div className="score-desc">{statusDesc}</div>
+                  <div className="updated-chip"><span className="uc-dot" />Live · updates in real time</div>
                 </div>
               </div>
             </div>
@@ -244,19 +247,20 @@ export default function LeftSidebar({ timeOfDay, incidents, hotspots, safetyScor
           {/* Distribution */}
           <div className="block">
             <div className="block-head"><div className="panel-label"><span className="tick" />Incident Distribution</div></div>
-            <div className="dist">
-              {Object.entries(cats).map(([k, v]) => {
-                const pct = Math.round(v / total * 100);
-                return (
-                  <div key={k} className="dist-row">
-                    <div className="dname">{k}</div>
-                    <div className="dist-track">
-                      <div className="dist-fill" style={{ width: pct+'%', background: DIST_COLORS[k], color: DIST_COLORS[k] }} />
+            <div className="donut-wrap">
+              <Donut cats={cats} total={total} />
+              <div className="donut-legend">
+                {Object.entries(cats).map(([k, v]) => {
+                  const pct = Math.round(v / total * 100);
+                  return (
+                    <div key={k} className="dl-row">
+                      <span className="dl-dot" style={{ background: DIST_COLORS[k] }} />
+                      <span className="dl-name">{k}</span>
+                      <span className="dl-pct">{pct}%</span>
                     </div>
-                    <div className="dpct">{pct}%</div>
-                  </div>
-                );
-              })}
+                  );
+                })}
+              </div>
             </div>
           </div>
 
@@ -490,6 +494,31 @@ export default function LeftSidebar({ timeOfDay, incidents, hotspots, safetyScor
   );
 }
 
+/** SVG donut — segments drawn as stroked circle arcs (dasharray magic). */
+function Donut({ cats, total }) {
+  const R = 40, C = 2 * Math.PI * R;
+  let offset = 0;
+  return (
+    <svg viewBox="0 0 110 110" className="donut">
+      <circle cx="55" cy="55" r={R} fill="none" stroke="rgba(255,255,255,.06)" strokeWidth="13" />
+      {Object.entries(cats).map(([k, v]) => {
+        const frac = v / total;
+        const seg = (
+          <circle key={k} cx="55" cy="55" r={R} fill="none"
+            stroke={DIST_COLORS[k]} strokeWidth="13"
+            strokeDasharray={`${frac * C} ${C}`}
+            strokeDashoffset={-offset * C}
+            transform="rotate(-90 55 55)" strokeLinecap="butt" />
+        );
+        offset += frac;
+        return seg;
+      })}
+      <text x="55" y="52" textAnchor="middle" className="donut-num">{total}</text>
+      <text x="55" y="66" textAnchor="middle" className="donut-sub">incidents</text>
+    </svg>
+  );
+}
+
 function HotspotCards({ hotspots }) {
   return (
     <div className="hs-list">
@@ -498,12 +527,13 @@ function HotspotCards({ hotspots }) {
   );
 }
 
-function HotspotCard({ h }) {
+export function HotspotCard({ h, rank }) {
   const col = h.score >= 60 ? '#FF3B5C' : h.score >= 30 ? '#FFA63D' : '#2DD4BF';
   const lvl = h.score >= 60 ? 'Critical' : h.score >= 30 ? 'Elevated' : 'Moderate';
   const recent = [...(h.items || [])].sort((a,b) => new Date(b.dt||b.occurred_at) - new Date(a.dt||a.occurred_at)).slice(0,3);
   return (
     <div className="hs-card" style={{ color: col }}>
+      {rank && <span className="hs-rank" style={{ borderColor: col, color: col }}>{rank}</span>}
       <div className="hs-top">
         <div>
           <div className="hs-name" style={{ color:'var(--text)' }}>
@@ -533,4 +563,3 @@ function HotspotCard({ h }) {
     </div>
   );
 }
-export { HotspotCard };
