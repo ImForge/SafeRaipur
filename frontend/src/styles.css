@@ -766,3 +766,37 @@ body{font-family:var(--ui);background:var(--void);color:var(--text);
   .legend{ left:10px; bottom:150px; }
   .sat-fab{ bottom:150px; right:10px; }
 }
+
+/* ============================================================
+   SAFERAIPUR v2.5 — mobile perf pass 2 + banner cancel + station icon
+   ============================================================ */
+
+/* cancel button inside the instruction banner */
+.ab-cancel{
+  margin-left:10px; width:26px; height:26px; border-radius:50%;
+  border:1px solid rgba(255,255,255,.3); background:rgba(0,0,0,.3);
+  color:#fff; font-size:12px; cursor:pointer; flex-shrink:0;
+  display:flex; align-items:center; justify-content:center;
+}
+.ab-cancel:active{ transform:scale(.9); }
+
+/* custom police-station icon (drop station.png into frontend/public/) */
+.station-img{ width:22px; height:22px; object-fit:contain;
+  filter:drop-shadow(0 0 6px rgba(77,163,255,.6)); }
+
+/* ---- PERF PASS 2: kill every continuous animation & heavy glow on phones.
+   Each infinite CSS animation forces the GPU to recomposite every frame,
+   forever. One or two is fine; a dozen at once melts weak phones.
+   Surge pulses stay — that's safety-critical signal, not decoration. ---- */
+@media (pointer: coarse), (max-width: 760px) {
+  .beacon .ring{ animation:none !important; opacity:.5; }
+  .route-path{ animation:none !important; }
+  .ab-dot{ animation:none !important; }
+  .live-chip .dot, .pill-dot{ animation:none !important; }
+  .gauge, .score-ring, .gauge-glow{ animation:none !important; }
+  .incident-dot{ box-shadow:none !important; }   /* 86+ glowing shadows = repaint storm */
+  .station-img{ filter:none; }
+  .metric, .block, .stat-pill{ transition:none !important; }
+  .legend-body{ animation:none; }
+  * { text-shadow:none !important; }
+}

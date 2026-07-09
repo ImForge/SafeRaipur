@@ -287,7 +287,7 @@ export default function LeftSidebar({ timeOfDay, incidents, hotspots, safetyScor
                 Safe Navigation
               </div>
             </div>
-            <button className="route-btn" onClick={onToggleRoute}>
+            <button className="route-btn" onClick={() => { onToggleRoute(); setSheetOpen(false); }}>
               <svg viewBox="0 0 24 24" width="15" fill="none" stroke="currentColor" strokeWidth="2.4"
                 strokeLinecap="round" strokeLinejoin="round">
                 <circle cx="6" cy="19" r="2.5"/><circle cx="18" cy="5" r="2.5"/>

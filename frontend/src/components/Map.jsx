@@ -27,7 +27,9 @@ export default function MapView({
   /* ------- init once ------- */
   useEffect(() => {
     if (mapRef.current) return;
-    const map = L.map(containerRef.current, { center: CENTER, zoom: 12, zoomControl: false });
+    // preferCanvas: circles/polylines draw on ONE canvas instead of hundreds
+    // of SVG nodes — meaningfully lighter on phones
+    const map = L.map(containerRef.current, { center: CENTER, zoom: 12, zoomControl: false, preferCanvas: true });
     L.control.zoom({ position: 'bottomright' }).addTo(map);
 
     // two base styles, swapped by the baseLayer PROP (React button in App —
@@ -83,7 +85,7 @@ export default function MapView({
     clear('stations');
     layers.current.stations = L.layerGroup().addTo(map);
     (stations || []).forEach(s => {
-      L.marker([s.lat, s.lng], { icon: L.divIcon({ className: '', html: '<div class="station-dot"></div>', iconSize: [11, 11] }) })
+      L.marker([s.lat, s.lng], { icon: L.divIcon({ className: '', html: `<img src="/station.png" class="station-img" onerror="this.outerHTML='<div class=\'station-dot\'></div>'" alt=""/>`, iconSize: [22, 22] }) })
         .bindPopup(`<div class="pv-area">🛡 ${s.name} Police Station</div><div class="pv-meta">${s.phone ? s.phone : 'Patrol unit · Active'}</div>`)
         .addTo(layers.current.stations);
     });

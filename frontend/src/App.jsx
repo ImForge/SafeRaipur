@@ -311,6 +311,10 @@ export default function App() {
       <div className={`arm-banner ${arming || routeBanner ? 'show' : ''}`}>
         <div className="ab-dot" />
         <span>{routeBanner || 'Tap anywhere on the map to mark the incident location'}</span>
+        <button className="ab-cancel" onClick={() => {
+          setRouteMode('idle'); setRoutePlan(null);
+          setRoutePts({ start: null, end: null }); setArming(false);
+        }}>✕</button>
       </div>
 
       <div className={`toast glass ${toast ? 'show' : ''}`}>
