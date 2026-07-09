@@ -5,6 +5,13 @@ import { weight, TYPE_LABEL } from '../utils/risk.js';
 
 const CENTER = [21.2200, 81.6500];
 
+/** HTML-escape for popup content. News titles come from the OPEN INTERNET —
+ *  without this, a crafted headline is a stored XSS against every visitor. */
+const esc = (v) => String(v ?? '').replace(/[&<>"']/g,
+  (c) => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]));
+/** Only real http(s) URLs may become links — kills javascript: URLs. */
+const safeUrl = (u) => (/^https?:\/\//i.test(u || '') ? u : '');
+
 /**
  * Map v2 — layers, bottom → top:
  *   dark CARTO tiles → precomputed risk heat → hotspot corridors →
@@ -50,6 +57,14 @@ export default function MapView({
     layers.current.baseDark = dark;
     layers.current.baseSat = sat;
 
+    // delegated click handler for popup vote buttons (CSP-safe: no inline JS)
+    const voteHandler = (e) => {
+      const b = e.target.closest('[data-vote]');
+      if (!b) return;
+      window.__srVote?.(Number(b.dataset.id), b.dataset.vote);
+    };
+    containerRef.current.addEventListener('click', voteHandler);
+
     mapRef.current = map;
     setTimeout(() => map.invalidateSize(), 200);
     return () => { map.remove(); mapRef.current = null; };
@@ -86,7 +101,7 @@ export default function MapView({
     layers.current.stations = L.layerGroup().addTo(map);
     (stations || []).forEach(s => {
       L.marker([s.lat, s.lng], { icon: L.divIcon({ className: '', html: `<img src="/station.png" class="station-img" onerror="this.outerHTML='<div class=\'station-dot\'></div>'" alt=""/>`, iconSize: [22, 22] }) })
-        .bindPopup(`<div class="pv-area">🛡 ${s.name} Police Station</div><div class="pv-meta">${s.phone ? s.phone : 'Patrol unit · Active'}</div>`)
+        .bindPopup(`<div class="pv-area">🛡 ${esc(s.name)} Police Station</div><div class="pv-meta">${s.phone ? s.phone : 'Patrol unit · Active'}</div>`)
         .addTo(layers.current.stations);
     });
   }, [stations]);
@@ -141,16 +156,16 @@ export default function MapView({
         })
       })
         .bindPopup(`<span class="pv-type">▲ ${TYPE_LABEL[i.type] || i.type}</span>
-          <div class="pv-area">${i.area || (isLive ? 'Community report' : 'Unknown')}</div>
-          ${i.title ? `<div class="pv-meta" style="max-width:230px">${i.title}</div>` : ''}
+          <div class="pv-area">${esc(i.area) || (isLive ? 'Community report' : 'Unknown')}</div>
+          ${i.title ? `<div class="pv-meta" style="max-width:230px">${esc(i.title)}</div>` : ''}
           <div class="pv-meta">${when}<br>Source: ${i.source === 'news' ? 'News-verified' : i.is_verified ? 'Community · Verified ✓' : 'Community · Unverified'} · Sev ${sev}/10</div>
-          ${i.source_url ? `<a class="pv-src" href="${i.source_url}" target="_blank" rel="noopener noreferrer">Read source article ↗</a>` : ''}
+          ${safeUrl(i.source_url) ? `<a class="pv-src" href="${esc(safeUrl(i.source_url))}" target="_blank" rel="noopener noreferrer">Read source article ↗</a>` : ''}
           ${isLive && !i.is_verified ? `
             <div class="pv-vote">
               <span class="pv-counts">${i.confirms || 0} confirm${(i.confirms||0)===1?'':'s'}${i.flags ? ` · ${i.flags} flagged` : ''}</span>
               <div class="pv-vote-btns">
-                <button class="pv-yes" onclick="window.__srVote(${i.id},'confirm')">✓ I can confirm</button>
-                <button class="pv-no" onclick="window.__srVote(${i.id},'fake')">Report fake</button>
+                <button class="pv-yes" data-vote="confirm" data-id="${i.id}">✓ I can confirm</button>
+                <button class="pv-no" data-vote="fake" data-id="${i.id}">Report fake</button>
               </div>
             </div>` : ''}
           <div class="pv-bar"><i style="width:${sev * 10}%;background:${col};box-shadow:0 0 8px ${col};"></i></div>`,
@@ -169,11 +184,11 @@ export default function MapView({
         }), zIndexOffset: 500
       })
         .bindPopup(`<div class="pv-type" style="background:${col}28;color:${col};">◉ Hotspot</div>
-          <div class="pv-area">${h.area}</div>
+          <div class="pv-area">${esc(h.area)}</div>
           <div class="pv-meta">${h.n} incidents · score ${h.score}/100</div>
           <div class="pv-bar"><i style="width:${h.score}%;background:${col};box-shadow:0 0 8px ${col};"></i></div>`,
           { closeButton: false })
-        .bindTooltip(h.area, { permanent: true, direction: 'right', offset: [14, 0], className: 'hs-label' })
+        .bindTooltip(esc(h.area), { permanent: true, direction: 'right', offset: [14, 0], className: 'hs-label' })
         .addTo(layers.current.beacons);
     });
   }, [incidents, hotspots, mapView]);
@@ -196,7 +211,7 @@ export default function MapView({
         }), zIndexOffset: 900
       })
         .bindPopup(`<div class="pv-type" style="background:#FF3B5C28;color:#FF3B5C;">⚠ SURGE</div>
-          <div class="pv-area">${a.area || 'Cluster detected'}</div>
+          <div class="pv-area">${esc(a.area) || 'Cluster detected'}</div>
           <div class="pv-meta">${a.report_count} incidents in ~${a.window_hours || 6}h · max severity ${a.max_severity}/10<br>Auto-detected · expires ${new Date(a.expires_at).toLocaleTimeString('en-IN', { timeStyle: 'short' })}</div>`,
           { closeButton: false })
         .addTo(layers.current.surges);
