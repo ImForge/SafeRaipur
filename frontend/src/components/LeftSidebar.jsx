@@ -119,6 +119,21 @@ export default function LeftSidebar({ timeOfDay, incidents, hotspots, safetyScor
 
   // swipe gesture on the handle/tabs: swipe down closes, swipe up opens
   const onTouchStart = (e) => { touchY.current = e.touches[0].clientY; };
+  const scrollRef = useRef(null);
+  const scrollTouch = useRef({ y: null, atTop: false });
+  const onScrollTouchStart = (e) => {
+    scrollTouch.current = {
+      y: e.touches[0].clientY,
+      atTop: (scrollRef.current?.scrollTop ?? 1) <= 2,
+    };
+  };
+  const onScrollTouchEnd = (e) => {
+    const { y, atTop } = scrollTouch.current;
+    if (y == null) return;
+    const dy = e.changedTouches[0].clientY - y;
+    scrollTouch.current = { y: null, atTop: false };
+    if (atTop && dy > 60) setSheetOpen(false);  // pulled down from the top → back to map
+  };
   const onTouchEnd = (e) => {
     if (touchY.current == null) return;
     const dy = e.changedTouches[0].clientY - touchY.current;
@@ -168,6 +183,9 @@ export default function LeftSidebar({ timeOfDay, incidents, hotspots, safetyScor
 
   return (
     <aside className={`side side-left glass ${sheetOpen ? 'sheet-open' : ''}`}>
+      {sheetOpen && (
+        <button className="sheet-close" onClick={() => setSheetOpen(false)}>✕ Map</button>
+      )}
       <div className="sheet-handle" onClick={() => setSheetOpen(o => !o)}
         onTouchStart={onTouchStart} onTouchEnd={onTouchEnd}>
         <div className="sheet-grip" />
@@ -182,7 +200,7 @@ export default function LeftSidebar({ timeOfDay, incidents, hotspots, safetyScor
         ))}
       </div>
 
-      <div className="side-scroll">
+      <div className="side-scroll" ref={scrollRef} onTouchStart={onScrollTouchStart} onTouchEnd={onScrollTouchEnd}>
         {/* OVERVIEW PANE */}
         <div className="tab-pane on" data-pane="overview">
 
