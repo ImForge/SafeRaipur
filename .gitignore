@@ -20,4 +20,7 @@ postgres-data/
 # OS files
 .DS_Store
 Thumbs.db
-```
+```SETUP.md
+docker-compose.yml
+db/
+backend/
