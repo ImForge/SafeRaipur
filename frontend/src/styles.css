@@ -1069,3 +1069,35 @@ body{font-family:var(--ui);background:var(--void);color:var(--text);
   .sheet-close:active{ transform:scale(.94); }
 }
 @media (min-width: 901px){ .sheet-close{ display:none; } }
+
+/* ============================================================
+   v3.3 — dock horizontal scroll, welcome toggle, reports panel
+   ============================================================ */
+
+/* THE dock scroll fix: on mobile the strip grew longer than the screen
+   (day/night + timeview + filters + report + SOS) but the container
+   never scrolled — everything past the fold was unreachable. */
+@media (max-width: 900px){
+  .dock{
+    overflow-x:auto; overflow-y:hidden;
+    -webkit-overflow-scrolling:touch; touch-action:pan-x;
+    scrollbar-width:none;
+  }
+  .dock::-webkit-scrollbar{ display:none; }
+  .dock > *{ flex-shrink:0; }
+  .filters{ overflow:visible; }   /* outer dock scrolls now; no nested scroll fight */
+}
+
+/* welcome "don't show again" toggle */
+.wc-toggle{
+  display:flex; align-items:flex-start; gap:8px; margin-top:12px;
+  font-size:10.5px; line-height:1.5; color:var(--text-dim, #AEB9CC);
+  text-align:left; cursor:pointer;
+}
+.wc-toggle input{ accent-color:#2DD4BF; margin-top:2px; }
+.wc-toggle em{ color:var(--text-faint, #66738A); font-style:normal; }
+
+/* mini vote buttons in the reports panel */
+.np-vote{ display:flex; gap:6px; flex-shrink:0; }
+.np-mini{ flex:none; width:32px; height:32px; padding:0; border-radius:9px;
+  font-size:13px; display:flex; align-items:center; justify-content:center; }

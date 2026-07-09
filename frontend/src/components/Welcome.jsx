@@ -1,24 +1,27 @@
 import { useState } from 'react';
 
 /**
- * Welcome — shows on EVERY visit (product decision: orientation + live
- * surge awareness gate). If surges are active, the popup carries a red
- * strip so people see "something is happening" before the map even loads.
+ * Welcome — shows on startup unless the person turned it off.
+ * Reopen anytime by tapping the shield logo in the top bar.
  */
-export default function Welcome({ alerts = [], onViewAlert }) {
-  const [show, setShow] = useState(true);
-  if (!show) return null;
-  const dismiss = () => setShow(false);
+export default function Welcome({ open, onClose, alerts = [], onViewAlert }) {
+  const [hide, setHide] = useState(() => localStorage.getItem('sr_hide_welcome') === '1');
+  if (!open) return null;
   const surge = alerts[0];
+  const toggleHide = (e) => {
+    const v = e.target.checked;
+    setHide(v);
+    localStorage.setItem('sr_hide_welcome', v ? '1' : '0');
+  };
   return (
-    <div className="welcome-overlay" onClick={dismiss}>
+    <div className="welcome-overlay" onClick={onClose}>
       <div className="welcome-card glass" onClick={(e) => e.stopPropagation()}>
         <div className="wc-logo">🛡</div>
         <h2>SafeRaipur</h2>
         <p className="wc-sub">Live city safety grid</p>
 
         {surge && (
-          <button className="wc-surge" onClick={() => { dismiss(); onViewAlert?.(surge); }}>
+          <button className="wc-surge" onClick={() => { onClose(); onViewAlert?.(surge); }}>
             <span className="sb-pulse" />
             <span className="wc-surge-text">
               MASS REPORTS{surge.area ? ` near ${surge.area}` : ''} — {surge.report_count} incidents in ~6h.
@@ -41,7 +44,11 @@ export default function Welcome({ alerts = [], onViewAlert }) {
             <span><b>Route</b> — "Plot Safest Route" compares paths against the risk map and picks the safest way.</span>
           </div>
         </div>
-        <button className="wc-btn" onClick={dismiss}>Explore the map</button>
+        <button className="wc-btn" onClick={onClose}>Explore the map</button>
+        <label className="wc-toggle">
+          <input type="checkbox" checked={hide} onChange={toggleHide} />
+          <span>Don't show this on startup <em>(tap the shield logo to reopen anytime)</em></span>
+        </label>
         <p className="wc-fine">Free · anonymous · your location never leaves your device</p>
       </div>
     </div>

@@ -59,6 +59,9 @@ export default function App() {
 
   const [toast, setToast] = useState(null);
   const [nudge, setNudge] = useState(false);
+  const [welcomeOpen, setWelcomeOpen] = useState(
+    () => localStorage.getItem('sr_hide_welcome') !== '1'
+  );
   const toastTimer = useRef(null);
   const riskCellsRef = useRef([]);
   riskCellsRef.current = riskCells;
@@ -289,7 +292,8 @@ export default function App() {
       />
 
       <Legend />
-      <Welcome alerts={alerts} onViewAlert={(al) => setFocusedLatLng({ lat: al.lat, lng: al.lng })} />
+      <Welcome open={welcomeOpen} onClose={() => setWelcomeOpen(false)}
+        alerts={alerts} onViewAlert={(al) => setFocusedLatLng({ lat: al.lat, lng: al.lng })} />
 
       {nudge && routeMode === 'idle' && !arming && (
         <div className="nudge-pop glass">
@@ -361,6 +365,8 @@ export default function App() {
       </div>
 
       <TopBar
+        reports={reports}
+        onLogoClick={() => setWelcomeOpen(true)}
         timeOfDay={timeOfDay}
         incidents={visibleIncidents}
         hotspots={hotspots}

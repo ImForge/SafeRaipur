@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { scoreColor } from '../utils/risk.js';
+import { scoreColor, TYPE_LABEL } from '../utils/risk.js';
 
 const PLACES = [
   'Telibandha','Pandri','Tikrapara','Gol Bazar','Civil Lines',
@@ -57,8 +57,12 @@ function timeAgo(dt) {
   return `${Math.floor(hrs / 24)}d ago`;
 }
 
-export default function TopBar({ incidents, hotspots, safetyScore, onSearch }) {
+export default function TopBar({ incidents, reports = [], hotspots, safetyScore, onSearch, onLogoClick }) {
   const [newsOpen, setNewsOpen] = useState(false);
+  const [repOpen, setRepOpen] = useState(false);
+  const recentReports = [...reports]
+    .sort((a, b) => new Date(b.occurred_at || b.dt) - new Date(a.occurred_at || a.dt))
+    .slice(0, 10);
   const news = incidents
     .filter(i => i.source === 'news' && i.title)
     .sort((a, b) => new Date(b.occurred_at || b.dt) - new Date(a.occurred_at || a.dt))
@@ -106,7 +110,7 @@ export default function TopBar({ incidents, hotspots, safetyScore, onSearch }) {
   return (
     <header className="topbar glass">
       {/* brand */}
-      <div className="brand">
+      <div className="brand" onClick={onLogoClick} style={{ cursor:'pointer' }} title="About SafeRaipur">
         <div className="logo-mark">
           <svg viewBox="0 0 24 24" width="18" fill="none" stroke="#fff" strokeWidth="2.2"
             strokeLinecap="round" strokeLinejoin="round">
@@ -120,7 +124,7 @@ export default function TopBar({ incidents, hotspots, safetyScore, onSearch }) {
         </div>
       </div>
 
-      <div className="live-chip">
+      <div className="live-chip pill-click" onClick={() => { setRepOpen(o => !o); setNewsOpen(false); }} title="Community reports">
         <div className="live-dot" />
         <span>LIVE FEED</span>
       </div>
@@ -152,7 +156,7 @@ export default function TopBar({ incidents, hotspots, safetyScore, onSearch }) {
       <div className="spacer" />
 
       {/* incidents pill — click for the latest news feed */}
-      <div className="stat-pill pill-click" onClick={() => setNewsOpen(o => !o)}>
+      <div className="stat-pill pill-click" onClick={() => { setNewsOpen(o => !o); setRepOpen(false); }}>
         <div className="pi" style={{ background:'rgba(255,59,92,.14)' }}>
           <svg viewBox="0 0 24 24" width="15" fill="none" stroke="#FF6178" strokeWidth="2.2"
             strokeLinecap="round" strokeLinejoin="round">
@@ -192,6 +196,32 @@ export default function TopBar({ incidents, hotspots, safetyScore, onSearch }) {
         </div>
       </div>
 
+      {repOpen && (
+        <div className="news-panel glass" onClick={(e) => e.stopPropagation()}>
+          <div className="np-head">
+            <span>Community Reports · tap ✓ if you can confirm</span>
+            <button className="np-close" onClick={() => setRepOpen(false)}>✕</button>
+          </div>
+          {recentReports.length === 0 && <div className="np-empty">No community reports yet in this view.</div>}
+          {recentReports.map((r) => (
+            <div key={r.id} className="np-row" onClick={() => { onSearch({ lat: r.lat, lng: r.lng }); setRepOpen(false); }}>
+              <div className="np-info">
+                <div className="np-title">{TYPE_LABEL[r.type] || r.type}{r.area ? ` · ${r.area}` : ''}</div>
+                <div className="np-meta">
+                  {timeAgo(r.occurred_at || r.dt)} · {r.confirms || 0} confirm{(r.confirms||0)===1?'':'s'}
+                  {r.flags ? ` · ${r.flags} flagged` : ''}{r.is_verified ? ' · ✓ Verified' : ''}
+                </div>
+              </div>
+              {!r.is_verified && (
+                <div className="np-vote" onClick={(e) => e.stopPropagation()}>
+                  <button className="pv-yes np-mini" onClick={() => window.__srVote?.(r.id, 'confirm')}>✓</button>
+                  <button className="pv-no np-mini" onClick={() => window.__srVote?.(r.id, 'fake')}>✕</button>
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+      )}
       {newsOpen && (
         <div className="news-panel glass" onClick={(e) => e.stopPropagation()}>
           <div className="np-head">
