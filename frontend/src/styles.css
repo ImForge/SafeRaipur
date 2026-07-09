@@ -794,7 +794,8 @@ body{font-family:var(--ui);background:var(--void);color:var(--text);
   .ab-dot{ animation:none !important; }
   .live-chip .dot, .pill-dot{ animation:none !important; }
   .gauge, .score-ring, .gauge-glow{ animation:none !important; }
-  .incident-dot{ box-shadow:none !important; }   /* 86+ glowing shadows = repaint storm */
+  /* modest ember glow: 6px is cheap paint; the old 20px halos were the storm */
+  .incident-dot{ box-shadow:0 0 6px currentColor !important; }
   .station-img{ filter:none; }
   .metric, .block, .stat-pill{ transition:none !important; }
   .legend-body{ animation:none; }

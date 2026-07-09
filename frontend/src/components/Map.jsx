@@ -99,18 +99,22 @@ export default function MapView({
     // Only render cells that carry real signal. Weak cells (score < .12)
     // previously painted the whole city — the "everything glows" soup.
     // Dark map = calm; color = actual concentration. Signal over noise.
+    // The sweet spot between v2.4 (soup: minOpacity .35 painted every cell)
+    // and v2.6 (barren: threshold .12 drained the map). Keep a low floor so
+    // the city has ATMOSPHERE, boost each cell's intensity so hotspots BLOOM,
+    // and let opacity truly reach zero between them.
     const pts = (riskCells && riskCells.length > 0)
-      ? riskCells.filter(c => c.score >= 0.12).map(c => [c.lat, c.lng, c.score])
+      ? riskCells.filter(c => c.score >= 0.05)
+          .map(c => [c.lat, c.lng, Math.min(1, c.score * 1.25)])
       : incidents.map(i => [i.lat, i.lng, weight(i) / 10]);         // fallback pre-ingest
-    // smaller radius/blur on phones = far fewer pixels to composite per frame
     const mobile = window.matchMedia('(pointer: coarse)').matches;
     layers.current.heat = L.heatLayer(pts, {
-      radius: mobile ? 22 : 32, blur: mobile ? 15 : 22,
+      radius: mobile ? 30 : 36, blur: mobile ? 22 : 26,
       minOpacity: 0, maxZoom: 17, max: 1,
       gradient: {
-        0: 'rgba(45,212,191,0)', .3: 'rgba(45,212,191,.35)',
-        .5: 'rgba(255,166,61,.55)', .7: 'rgba(255,59,92,.75)',
-        .88: 'rgba(255,59,92,.9)', 1: 'rgba(255,90,120,1)',
+        0: 'rgba(45,212,191,0)', .22: 'rgba(45,212,191,.4)',
+        .45: 'rgba(255,166,61,.62)', .65: 'rgba(255,59,92,.78)',
+        .85: 'rgba(255,59,92,.92)', 1: 'rgba(255,90,120,1)',
       },
     }).addTo(map);
   }, [riskCells, incidents]);
