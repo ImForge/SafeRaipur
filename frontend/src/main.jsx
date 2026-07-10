@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App.jsx';
+import 'leaflet/dist/leaflet.css';
 import './styles.css';
 
 // Perf: the heatmap library reads canvas pixels repeatedly. Telling the
