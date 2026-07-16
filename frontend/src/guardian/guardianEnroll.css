@@ -1,0 +1,45 @@
+/* Guardian enrollment — calm, form-like, still on black but softer than the
+   panic screens. This is the "features live here" surface. */
+.grd-enroll-root { align-items: flex-start; overflow-y: auto; }
+.grd-enroll {
+  width: 100%; max-width: 420px; margin: 0 auto;
+  padding: max(56px, env(safe-area-inset-top)) 4px 40px;
+}
+.grd-enroll-steps { display: flex; gap: 8px; justify-content: center; margin-bottom: 34px; }
+.grd-step-dot { width: 30px; height: 4px; border-radius: 2px; background: rgba(255,255,255,.14); transition: background .25s; }
+.grd-step-dot.on { background: var(--grd-red, #FF3B5C); }
+
+.grd-enroll-body { display: flex; flex-direction: column; }
+.grd-enroll-h1 { font-size: 27px; font-weight: 800; letter-spacing: -.01em; margin-bottom: 12px; }
+.grd-enroll-p { font-size: 15.5px; line-height: 1.5; color: var(--grd-dim, #8b8b93); margin-bottom: 26px; }
+.grd-enroll-p b { color: #fff; font-weight: 700; }
+
+.grd-field { display: flex; flex-direction: column; gap: 8px; margin-bottom: 18px; }
+.grd-field span { font-size: 14px; color: var(--grd-dim, #8b8b93); font-weight: 500; }
+.grd-field input, .grd-otp-input, .grd-contact-row input {
+  background: #101014; border: 1px solid rgba(255,255,255,.12); border-radius: 12px;
+  color: #fff; font-size: 17px; padding: 15px 16px;
+  font-family: var(--grd-face,'Satoshi',system-ui,sans-serif);
+}
+.grd-field input:focus, .grd-otp-input:focus, .grd-contact-row input:focus {
+  outline: none; border-color: var(--grd-red, #FF3B5C);
+}
+.grd-otp-input {
+  width: 100%; text-align: center; font-size: 34px; letter-spacing: .4em;
+  padding: 18px; margin-bottom: 18px; font-variant-numeric: tabular-nums;
+}
+
+.grd-contact-row { display: grid; grid-template-columns: 28px 1.1fr 1fr; gap: 8px; align-items: center; margin-bottom: 10px; }
+.grd-contact-row input { padding: 13px 12px; font-size: 15px; }
+.grd-contact-num {
+  width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center;
+  background: rgba(255,59,92,.16); color: var(--grd-red,#FF3B5C); font-weight: 700; font-size: 14px;
+}
+
+.grd-enroll-err { color: var(--grd-warn,#FFA63D); font-size: 14.5px; font-weight: 600; margin: 4px 0 16px; line-height: 1.4; }
+.grd-enroll-link { background: none; border: none; color: var(--grd-dim,#8b8b93); font-size: 15px; padding: 14px; cursor: pointer; text-decoration: underline; text-underline-offset: 3px; align-self: center; }
+.grd-enroll-body .grd-btn { margin-top: 8px; }
+
+.grd-enroll-done { align-items: center; text-align: center; padding-top: 40px; }
+.grd-done-shield { color: var(--grd-ack,#2DD4BF); margin-bottom: 20px; }
+.grd-done-shield svg { width: 72px; height: 72px; }

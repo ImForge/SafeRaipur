@@ -1,0 +1,115 @@
+/* Guardian Gateway console.
+   Design intent: an instrument, not an app. The phone sits on a shelf —
+   the state lamp must be legible from three meters. Everything else is a
+   receipt tape. Palette borrows SafeRaipur's dark-ops map: near-black
+   ground, signal colors reserved strictly for state. */
+
+:root {
+  --bg:      #0b0f14;
+  --panel:   #111823;
+  --line:    #1f2a38;
+  --ink:     #c7d3e0;
+  --dim:     #5d6b7c;
+  --alive:   #2bd576;  /* pipe healthy            */
+  --working: #ffb02e;  /* commands in flight      */
+  --dead:    #ff4757;  /* backend unreachable     */
+  --mock:    #7aa7ff;  /* mock mode accent        */
+  --mono: "JetBrains Mono", ui-monospace, "Cascadia Mono", Menlo, monospace;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; }
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--mono);
+  font-size: 14px;
+  padding: env(safe-area-inset-top) 0 env(safe-area-inset-bottom);
+}
+
+header {
+  display: flex; flex-direction: column; gap: 6px;
+  padding: 14px 16px 10px;
+  border-bottom: 1px solid var(--line);
+}
+.brand { font-size: 12px; letter-spacing: .18em; color: var(--dim); }
+.brand b { color: var(--ink); font-weight: 700; }
+
+.mock-badge {
+  align-self: flex-start;
+  font-size: 11px; letter-spacing: .12em;
+  color: var(--bg); background: var(--mock);
+  padding: 3px 8px; border-radius: 3px; font-weight: 700;
+}
+
+main { padding: 14px 16px 40px; display: grid; gap: 14px; }
+
+/* ---- the lamp: the whole point of this screen ---- */
+.lamp {
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 26px 16px;
+  text-align: center;
+  background: var(--panel);
+  transition: border-color .3s, box-shadow .3s;
+}
+.lamp-word { font-size: 42px; font-weight: 800; letter-spacing: .06em; }
+.lamp-sub  { margin-top: 6px; color: var(--dim); font-size: 12px; }
+
+.state-boot    .lamp-word { color: var(--dim); }
+.state-alive   { border-color: var(--alive);   box-shadow: 0 0 24px -8px var(--alive); }
+.state-alive   .lamp-word { color: var(--alive); }
+.state-working { border-color: var(--working); box-shadow: 0 0 24px -8px var(--working); }
+.state-working .lamp-word { color: var(--working); }
+.state-dead    { border-color: var(--dead);    box-shadow: 0 0 24px -8px var(--dead);
+                 animation: throb 1s infinite alternate; }
+.state-dead    .lamp-word { color: var(--dead); }
+@keyframes throb { from { box-shadow: 0 0 12px -8px var(--dead); }
+                   to   { box-shadow: 0 0 34px -4px var(--dead); } }
+@media (prefers-reduced-motion: reduce) { .state-dead { animation: none; } }
+
+/* ---- counters ---- */
+.counters { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; }
+.counter {
+  background: var(--panel); border: 1px solid var(--line);
+  border-radius: 8px; padding: 10px 4px; text-align: center;
+}
+.counter span { display: block; font-size: 20px; font-weight: 700; }
+.counter label { font-size: 10px; color: var(--dim); letter-spacing: .08em; }
+.failnum { color: var(--dead); }
+
+/* ---- controls ---- */
+.controls { display: grid; gap: 10px; }
+.btn {
+  font-family: var(--mono); font-size: 16px; font-weight: 800;
+  letter-spacing: .1em; padding: 16px; border-radius: 8px;
+  border: 1px solid var(--line); cursor: pointer;
+}
+.btn:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+.btn.primary { background: var(--alive); color: #04140b; border-color: var(--alive); }
+.btn.danger  { background: transparent; color: var(--dead); border-color: var(--dead); }
+.mock-toggle { color: var(--dim); font-size: 12px; display: flex; gap: 8px; align-items: center; }
+.mock-toggle input { width: 18px; height: 18px; accent-color: var(--mock); }
+
+/* ---- config ---- */
+.config { display: grid; gap: 8px; }
+.config h2, .tape h2 {
+  font-size: 11px; letter-spacing: .16em; color: var(--dim);
+  text-transform: uppercase; font-weight: 600;
+}
+.config input {
+  background: var(--panel); border: 1px solid var(--line); border-radius: 6px;
+  color: var(--ink); font-family: var(--mono); font-size: 13px; padding: 12px;
+}
+.config input:focus-visible { outline: 2px solid var(--mock); outline-offset: 1px; }
+.hint { font-size: 11px; color: var(--dim); line-height: 1.5; }
+.hint code { color: var(--ink); }
+
+/* ---- receipt tape ---- */
+.tape pre {
+  background: #070a0e; border: 1px solid var(--line); border-radius: 8px;
+  padding: 12px; font-size: 11.5px; line-height: 1.6;
+  max-height: 40vh; overflow-y: auto; white-space: pre-wrap; word-break: break-word;
+}
+
+.hidden { display: none !important; }

@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Guardian Gateway</title>
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- The gateway phone lives plugged-in on a shelf. This screen has ONE
+       job: tell you from across the room whether the pipe is alive.
+       Big state lamp, uptime counters, monospace receipt tape. -->
+
+  <header>
+    <div class="brand">SAFERAIPUR <b>GUARDIAN GATEWAY</b></div>
+    <div id="mockBadge" class="mock-badge hidden">MOCK MODE — NOTHING REAL IS SENT</div>
+  </header>
+
+  <main>
+    <section id="lamp" class="lamp state-boot">
+      <div id="lampWord" class="lamp-word">BOOTING</div>
+      <div id="lampSub" class="lamp-sub">waiting for first poll…</div>
+    </section>
+
+    <section class="counters">
+      <div class="counter"><span id="cPolls">0</span><label>polls</label></div>
+      <div class="counter"><span id="cSms">0</span><label>sms sent</label></div>
+      <div class="counter"><span id="cCalls">0</span><label>calls placed</label></div>
+      <div class="counter"><span id="cAcks">0</span><label>inbound fwd</label></div>
+      <div class="counter"><span id="cFails" class="failnum">0</span><label>failures</label></div>
+    </section>
+
+    <section class="controls">
+      <button id="btnStart" class="btn primary">START GATEWAY</button>
+      <button id="btnStop" class="btn danger hidden">STOP</button>
+      <label class="mock-toggle">
+        <input type="checkbox" id="mockToggle" checked />
+        mock mode (log only, don't touch the SIM)
+      </label>
+    </section>
+
+    <section class="config" id="configPanel">
+      <h2>configuration</h2>
+      <input id="cfgUrl"    placeholder="Supabase URL  (https://xxxx.supabase.co)" autocomplete="off" />
+      <input id="cfgAnon"   placeholder="Supabase anon key" autocomplete="off" />
+      <input id="cfgSecret" placeholder="Gateway secret (set in gateway_devices)" autocomplete="off" />
+      <p class="hint">Saved on this device only. The secret must match the row
+      you updated in <code>gateway_devices</code> — the seed value is refused
+      by the backend on purpose.</p>
+    </section>
+
+    <section class="tape">
+      <h2>receipt tape</h2>
+      <pre id="log"></pre>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>

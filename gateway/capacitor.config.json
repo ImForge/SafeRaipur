@@ -1,0 +1,11 @@
+{
+  "appId": "xyz.imforge.guardian",
+  "appName": "Guardian Gateway",
+  "webDir": "www",
+  "android": {
+    "allowMixedContent": false
+  },
+  "server": {
+    "androidScheme": "https"
+  }
+}

@@ -1,0 +1,27 @@
+<!-- ======================================================================
+  MERGE these into android/app/src/main/AndroidManifest.xml after running
+  `npx cap add android`. Do NOT replace the generated manifest — add these.
+======================================================================= -->
+
+<!-- 1. Permissions: place ALONGSIDE the existing <uses-permission> lines,
+        as direct children of <manifest> (outside <application>). -->
+<uses-permission android:name="android.permission.SEND_SMS" />
+<uses-permission android:name="android.permission.CALL_PHONE" />
+<uses-permission android:name="android.permission.RECEIVE_SMS" />
+<uses-permission android:name="android.permission.WAKE_LOCK" />
+
+<!-- 2. Inbound SMS receiver: place INSIDE the <application> element,
+        next to the generated <activity>. -->
+<receiver
+    android:name=".SmsReceiver"
+    android:exported="true"
+    android:permission="android.permission.BROADCAST_SMS">
+    <intent-filter android:priority="999">
+        <action android:name="android.provider.Telephony.SMS_RECEIVED" />
+    </intent-filter>
+</receiver>
+
+<!-- 3. Sanity check: the generated <manifest package> / applicationId in
+        android/app/build.gradle must be xyz.imforge.guardian so the java
+        files in this folder land in the right package. That's what the
+        --package-id flag in the setup commands guarantees. -->
