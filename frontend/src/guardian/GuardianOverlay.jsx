@@ -44,20 +44,77 @@ export default function GuardianOverlay({ onExit }) {
     if (active) { setEmergencyId(active); setScreen('live'); }
   }, []);
 
-  // ---- best-effort location (never blocks the trigger) ----
+  // ---- LOCATION ----------------------------------------------------------
+  // Her location is the single most valuable thing we send: it's what turns
+  // "help me" into a map pin for her contacts AND what routes police to the
+  // nearest station. So it is NOT silent best-effort any more:
+  //   • we ask for permission the moment Guardian opens (not at trigger time,
+  //     when seconds matter),
+  //   • the READY screen SHOWS whether we have a fix — she can see the system
+  //     is armed properly before she ever needs it,
+  //   • at trigger time we wait up to 4s for a first fix rather than firing
+  //     blind, then send anyway (never block the alert on GPS).
+  const [locState, setLocState] = useState('init'); // init|locating|ok|denied|unavailable
+
   useEffect(() => {
-    if (!navigator.geolocation) return;
+    if (!navigator.geolocation) { setLocState('unavailable'); return; }
+    setLocState('locating');
     const id = navigator.geolocation.watchPosition(
-      (p) => { locationRef.current = { lat: p.coords.latitude, lng: p.coords.longitude }; },
-      () => {}, { enableHighAccuracy: true, maximumAge: 15000, timeout: 10000 }
+      (p) => {
+        locationRef.current = { lat: p.coords.latitude, lng: p.coords.longitude };
+        setLocState('ok');
+      },
+      (err) => {
+        // 1 = PERMISSION_DENIED — she can still send, but her people won't
+        // get a map pin, and she deserves to know that up front.
+        setLocState(err.code === 1 ? 'denied' : 'unavailable');
+      },
+      { enableHighAccuracy: true, maximumAge: 15000, timeout: 10000 }
     );
     return () => navigator.geolocation.clearWatch(id);
+  }, []);
+
+  // Ask once more, on demand, when she taps the location warning.
+  const retryLocation = useCallback(() => {
+    if (!navigator.geolocation) return;
+    setLocState('locating');
+    navigator.geolocation.getCurrentPosition(
+      (p) => {
+        locationRef.current = { lat: p.coords.latitude, lng: p.coords.longitude };
+        setLocState('ok');
+      },
+      (err) => setLocState(err.code === 1 ? 'denied' : 'unavailable'),
+      { enableHighAccuracy: true, timeout: 10000 }
+    );
+  }, []);
+
+  // Give GPS a brief chance to produce a first fix before we fire — but never
+  // let it delay the alert beyond a few seconds.
+  const waitForFix = useCallback(async (ms = 4000) => {
+    if (locationRef.current.lat != null) return;
+    if (!navigator.geolocation) return;
+    await new Promise((resolve) => {
+      let done = false;
+      const finish = () => { if (!done) { done = true; resolve(); } };
+      const t = setTimeout(finish, ms);
+      navigator.geolocation.getCurrentPosition(
+        (p) => {
+          locationRef.current = { lat: p.coords.latitude, lng: p.coords.longitude };
+          setLocState('ok');
+          clearTimeout(t); finish();
+        },
+        () => { clearTimeout(t); finish(); },
+        { enableHighAccuracy: true, timeout: ms }
+      );
+    });
   }, []);
 
   // ================= TRIGGER =================
   const fireTrigger = useCallback(async () => {
     setBanner(null);
     try {
+      // one short chance at a fix — her location is worth ~4 seconds
+      await waitForFix(4000);
       const { lat, lng } = locationRef.current;
       const res = await guardianApi.trigger(lat, lng, null);
       if (!res?.ok) { setBanner(res?.error || 'Could not start. Call 112 now.'); return; }
@@ -162,7 +219,13 @@ export default function GuardianOverlay({ onExit }) {
       <button className="grd-exit" onClick={onExit} aria-label="Close Guardian Mode">✕</button>
 
       {screen === 'ready' && (
-        <ReadyScreen onHoldComplete={fireTrigger} banner={banner} onCall112={call112} />
+        <ReadyScreen
+          onHoldComplete={fireTrigger}
+          banner={banner}
+          onCall112={call112}
+          locState={locState}
+          onRetryLocation={retryLocation}
+        />
       )}
 
       {screen === 'countdown' && (
@@ -195,7 +258,24 @@ export default function GuardianOverlay({ onExit }) {
 }
 
 /* ────────────────────────── READY ────────────────────────── */
-function ReadyScreen({ onHoldComplete, banner, onCall112 }) {
+// The location chip: quiet confirmation when armed properly, an actionable
+// warning when not. She should never discover at the worst moment that her
+// people got "(no location shared)".
+function LocationChip({ state, onRetry }) {
+  if (state === 'ok') {
+    return <p className="grd-loc grd-loc-ok">📍 Location ready — your people will get a map pin</p>;
+  }
+  if (state === 'locating' || state === 'init') {
+    return <p className="grd-loc grd-loc-wait">📍 Finding your location…</p>;
+  }
+  return (
+    <button className="grd-loc grd-loc-bad" onClick={onRetry}>
+      ⚠ No location — your people won’t get a map pin. Tap to enable.
+    </button>
+  );
+}
+
+function ReadyScreen({ onHoldComplete, banner, onCall112, locState, onRetryLocation }) {
   const HOLD_MS = 2000; // a hold is a decision; a tap is an accident
   const [progress, setProgress] = useState(0);
   const raf = useRef(null);
@@ -238,6 +318,8 @@ function ReadyScreen({ onHoldComplete, banner, onCall112 }) {
       </button>
 
       <p className="grd-hint">Hold for 2 seconds</p>
+
+      <LocationChip state={locState} onRetry={onRetryLocation} />
 
       {banner && <p className="grd-banner-err">{banner}</p>}
 

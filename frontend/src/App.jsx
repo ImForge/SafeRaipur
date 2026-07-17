@@ -14,6 +14,7 @@ import Dock from './components/Dock.jsx';
 import ReportModal from './components/ReportModal.jsx';
 import Legend from './components/Legend.jsx';
 import Welcome from './components/Welcome.jsx';
+import GuardianButton from './guardian/GuardianButton.jsx';
 
 /**
  * SafeRaipur v2 — app shell.
@@ -399,6 +400,8 @@ export default function App() {
         arming={arming} setArming={(v) => { setArming(v); if (v) { setRouteMode('idle'); setRoutePlan(null); } }}
         timeRange={timeRange} setTimeRange={setTimeRange}
       />
+
+      <GuardianButton />
 
       <div className={`arm-banner ${arming || routeBanner ? 'show' : ''}`}>
         <div className="ab-dot" />
