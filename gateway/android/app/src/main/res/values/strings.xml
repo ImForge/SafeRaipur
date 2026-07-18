@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Guardian Gateway</string>
+    <string name="title_activity_main">Guardian Gateway</string>
+    <string name="package_name">xyz.imforge.guardian</string>
+    <string name="custom_url_scheme">xyz.imforge.guardian</string>
+</resources>

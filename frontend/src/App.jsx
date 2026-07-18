@@ -15,6 +15,7 @@ import ReportModal from './components/ReportModal.jsx';
 import Legend from './components/Legend.jsx';
 import Welcome from './components/Welcome.jsx';
 import GuardianButton from './guardian/GuardianButton.jsx';
+import PoliceDashboard from './police/PoliceDashboard.jsx';
 
 /**
  * SafeRaipur v2 — app shell.
@@ -27,6 +28,9 @@ import GuardianButton from './guardian/GuardianButton.jsx';
  *              ORS/OSRM alternatives scored against the risk grid
  */
 export default function App() {
+  if (typeof window !== 'undefined' && window.location.pathname.startsWith('/police')) {
+    return <PoliceDashboard />;
+  }
   const [timeOfDay, setTimeOfDay] = useState('night');
   const [activeCat, setActiveCat] = useState('all');
 

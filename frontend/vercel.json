@@ -1,4 +1,7 @@
 {
+  "rewrites": [
+    { "source": "/police", "destination": "/index.html" }
+  ],
   "headers": [
     {
       "source": "/(.*)",

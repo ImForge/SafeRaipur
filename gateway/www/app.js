@@ -117,7 +117,9 @@ async function execute(cmd) {
       await tel.sendSms({ to: cmd.to_phone, body: cmd.body || "" });
       S.sms++;
     } else {
-      await tel.placeCall({ to: cmd.to_phone });
+      // cmd.body on a call row is the SPOKEN SCRIPT — the gateway dials, then
+      // reads it aloud into the call via TTS. A silent call gets hung up on.
+      await tel.placeCall({ to: cmd.to_phone, speak: cmd.body || "" });
       S.calls++;
     }
     tape(`SENT ${label}`);

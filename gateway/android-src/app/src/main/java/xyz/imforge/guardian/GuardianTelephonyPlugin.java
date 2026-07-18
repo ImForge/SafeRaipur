@@ -4,8 +4,15 @@ import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.media.AudioManager;
 import android.net.Uri;
+import android.os.Build;
+import android.speech.tts.TextToSpeech;
+import android.speech.tts.UtteranceProgressListener;
 import android.telephony.SmsManager;
+
+import java.util.HashMap;
+import java.util.Locale;
 
 import com.getcapacitor.JSArray;
 import com.getcapacitor.JSObject;
@@ -68,21 +75,93 @@ public class GuardianTelephonyPlugin extends Plugin {
     }
 
     // ----------------------------------------------------------------- CALL
+    /**
+     * Places a call AND speaks a message into it.
+     *
+     * Why this exists: a silent ringing phone proves nothing. If a contact
+     * answers and hears dead air, they hang up thinking it's a spam call —
+     * the single most important channel wasted. So after dialing we wait for
+     * the callee to plausibly answer, then speak the emergency aloud through
+     * the call audio, repeating it several times (people say "hello?" over
+     * the first pass of any automated message).
+     *
+     * The honest limitation: Android gives apps NO reliable way to detect
+     * "the other side answered" without READ_PHONE_STATE + a call listener,
+     * and even then, carrier-dependent. So we use a fixed delay: dial, wait
+     * ~8s (typical answer window), then speak on repeat. Some of the message
+     * may land on voicemail or be missed if they answer late — which is
+     * exactly why the SMS with the map link ALWAYS goes out too. The call is
+     * the attention-getter; the SMS is the payload.
+     */
     @PluginMethod
     public void placeCall(PluginCall call) {
         if (!hasTelephonyPerms()) { requestAllPermissions(call, "permsThenRetry"); return; }
         String to = call.getString("to");
+        String speak = call.getString("speak");   // optional: message to read aloud
         if (to == null || to.isEmpty()) { call.reject("missing 'to'"); return; }
         try {
             Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + to));
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             getContext().startActivity(intent);
+
+            if (speak != null && !speak.isEmpty()) {
+                speakIntoCall(speak);
+            }
             call.resolve(ok());
         } catch (SecurityException e) {
             call.reject("CALL_PHONE permission denied: " + e.getMessage());
         } catch (Exception e) {
             call.reject("Call failed: " + e.getMessage());
         }
+    }
+
+    /** Speak text through the call audio path, on repeat, after an answer delay. */
+    private void speakIntoCall(final String text) {
+        final Context ctx = getContext();
+        new Thread(() -> {
+            TextToSpeech[] holder = new TextToSpeech[1];
+            try {
+                Thread.sleep(8000); // give them time to actually answer
+
+                holder[0] = new TextToSpeech(ctx, status -> {
+                    if (status != TextToSpeech.SUCCESS) return;
+                    TextToSpeech tts = holder[0];
+                    tts.setLanguage(Locale.US);
+                    tts.setSpeechRate(0.9f);   // slightly slow: clarity under stress
+
+                    // Route audio into the voice call, and force speaker so the
+                    // gateway's mic picks it up on handsets that won't inject
+                    // TTS directly into the uplink.
+                    AudioManager am = (AudioManager) ctx.getSystemService(Context.AUDIO_SERVICE);
+                    if (am != null) {
+                        am.setMode(AudioManager.MODE_IN_CALL);
+                        am.setSpeakerphoneOn(true);
+                        am.setStreamVolume(AudioManager.STREAM_VOICE_CALL,
+                            am.getStreamMaxVolume(AudioManager.STREAM_VOICE_CALL), 0);
+                    }
+
+                    HashMap<String, String> params = new HashMap<>();
+                    params.put(TextToSpeech.Engine.KEY_PARAM_STREAM,
+                               String.valueOf(AudioManager.STREAM_VOICE_CALL));
+
+                    // repeat 3x — the first pass is usually talked over
+                    for (int i = 0; i < 3; i++) {
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                            android.os.Bundle b = new android.os.Bundle();
+                            b.putInt(TextToSpeech.Engine.KEY_PARAM_STREAM,
+                                     AudioManager.STREAM_VOICE_CALL);
+                            tts.speak(text, i == 0 ? TextToSpeech.QUEUE_FLUSH
+                                                   : TextToSpeech.QUEUE_ADD, b, "grd" + i);
+                        } else {
+                            tts.speak(text, i == 0 ? TextToSpeech.QUEUE_FLUSH
+                                                   : TextToSpeech.QUEUE_ADD, params);
+                        }
+                    }
+                });
+            } catch (Exception ignored) {
+                // TTS must never crash the gateway; the SMS still carries the payload.
+            }
+        }).start();
     }
 
     // ---------------------------------------------------------------- INBOX
